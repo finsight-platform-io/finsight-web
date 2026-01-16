@@ -1,0 +1,64 @@
+export default function Footer() {
+  return (
+    <footer className="border-t border-gray-200 bg-white mt-auto">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          {/* About */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">
+              About Finsight
+            </h3>
+            <p className="text-sm text-gray-600">
+              Indian stock market information platform for NSE & BSE.
+            </p>
+          </div>
+
+          {/* Markets */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">
+              Markets
+            </h3>
+            <ul className="space-y-2 text-sm text-gray-600">
+              <li>Nifty 50</li>
+              <li>Sensex</li>
+              <li>Bank Nifty</li>
+              <li>NSE Stocks</li>
+            </ul>
+          </div>
+
+          {/* Tools */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">
+              Tools
+            </h3>
+            <ul className="space-y-2 text-sm text-gray-600">
+              <li>Stock Screener</li>
+              <li>Watchlist</li>
+              <li>Portfolio Tracker</li>
+              <li>Market Calendar</li>
+            </ul>
+          </div>
+
+          {/* Legal */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">
+              Legal
+            </h3>
+            <ul className="space-y-2 text-sm text-gray-600">
+              <li>Privacy Policy</li>
+              <li>Terms of Service</li>
+              <li>Disclaimer</li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Bottom */}
+        <div className="mt-8 pt-8 border-t border-gray-200">
+          <p className="text-center text-sm text-gray-600">
+            © 2026 Finsight. Information platform only - not for trading.
+          </p>
+        </div>
+      </div>
+    </footer>
+  )
+}
