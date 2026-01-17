@@ -117,32 +117,33 @@ export default function StockDetailPage() {
   const isPositive = stock.change >= 0;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Back Button */}
-      <button
-        onClick={() => router.back()}
-        className="flex items-center text-gray-600 hover:text-gray-900 mb-6"
-      >
-        <svg
-          className="w-5 h-5 mr-2"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Back Button */}
+        <button
+          onClick={() => router.back()}
+          className="flex items-center text-gray-600 hover:text-gray-900 mb-6"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M15 19l-7-7 7-7"
-          />
-        </svg>
-        Back
-      </button>
+          <svg
+            className="w-5 h-5 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+          Back
+        </button>
 
-      {/* Stock Header */}
-      <div className="mb-8">
-        <div className="flex items-start justify-between">
-          <div>
+        {/* Stock Header */}
+        <div className="mb-8 bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <div className="flex items-start justify-between">
+            <div>
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
               {stock.name}
             </h1>
@@ -196,6 +197,7 @@ export default function StockDetailPage() {
             </div>
           </div>
         </div>
+      </div>
       </div>
 
       {/* Stock Chart */}
