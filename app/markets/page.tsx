@@ -233,7 +233,7 @@ export default function MarketsPage() {
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Top Gainers */}
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div id="gainers" className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-xl font-semibold text-gray-900">
                     Top Gainers
@@ -278,7 +278,7 @@ export default function MarketsPage() {
               </div>
 
               {/* Top Losers */}
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div id="losers" className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-xl font-semibold text-gray-900">
                     Top Losers

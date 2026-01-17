@@ -17,7 +17,20 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2 flex-shrink-0">
+          <Link href="/" className="flex items-center space-x-3 flex-shrink-0">
+            <svg 
+              className="w-6 h-6 text-white" 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={2} 
+                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" 
+              />
+            </svg>
             <span className="text-2xl">📈</span>
             <span className="text-xl font-bold text-white">Finsight</span>
           </Link>
@@ -262,6 +275,21 @@ export default function Header() {
             >
               Market News
             </Link>
+            <Link
+              href="/analysis"
+              className="text-white hover:text-orange-100 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-white"
+            >
+              Analysis
+            </Link>
+            <Link
+              href="/portfolio"
+              className="text-white hover:text-orange-100 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-white flex items-center space-x-1"
+            >
+              {!session?.user && (
+                <span className="text-cyan-400 text-base">⭐</span>
+              )}
+              <span>Portfolio</span>
+            </Link>
             {session?.user && (
               <>
                 <Link
@@ -278,6 +306,17 @@ export default function Header() {
                 </Link>
               </>
             )}
+            {/* Finsight Pro - Premium Feature */}
+            <Link
+              href="/pro"
+              className="flex items-center space-x-1 text-white font-bold py-3 text-sm whitespace-nowrap transition-all border-b-2 border-transparent hover:border-white ml-auto"
+            >
+              <span>Finsight</span>
+              <span className="bg-yellow-300 text-orange-900 px-2 py-0.5 rounded font-bold text-xs">
+                PRO
+              </span>
+              <span className="text-lg">💎</span>
+            </Link>
           </nav>
         </div>
       </div>
