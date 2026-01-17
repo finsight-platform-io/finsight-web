@@ -353,12 +353,309 @@ STEP 4: Add to "## 🎊 Achievements Unlocked" section (add Day 2 continuation):
 ---
 
 ---
-STEP 5: Update at the very bottom:
+
+# PROGRESS UPDATE - Modules 4 & 5
+
+## Day 2 (Continued) - January 17, 2026 (Saturday)
+
+### 🎯 Module 4: Stock Search & Details ✅ COMPLETE
+
+**Time Spent:** ~2 hours  
+**Status:** Production Ready
+
+### Achievements:
+
+#### Stock Search API
+- ✅ Created `/api/stocks/search` endpoint
+- ✅ Yahoo Finance search integration
+- ✅ Filter for Indian stocks (NSE/BSE)
+- ✅ Return stock symbol, name, exchange, type
+- ✅ Support for partial matches
+
+#### Stock Detail API
+- ✅ Created `/api/stocks/[symbol]` endpoint
+- ✅ Fetch comprehensive stock data
+- ✅ Price, change, volume, market cap
+- ✅ 52-week high/low
+- ✅ P/E ratio, dividend yield, beta
+- ✅ Market state (OPEN/CLOSED)
+
+#### Search Component
+- ✅ Built StockSearch component
+- ✅ Auto-complete dropdown
+- ✅ Debounced search (300ms)
+- ✅ Click outside to close
+- ✅ Loading spinner
+- ✅ Exchange badges (NSE/BSE)
+- ✅ Navigate to stock page on click
+
+#### Stock Detail Page
+- ✅ Dynamic route `/stocks/[symbol]`
+- ✅ Stock name, symbol, exchange
+- ✅ Large price display
+- ✅ Change & percentage (color coded)
+- ✅ 12 key statistics grid
+- ✅ Back button
+- ✅ Refresh functionality
+- ✅ Loading & error states
+
+#### Header Integration
+- ✅ Added search bar to header (desktop)
+- ✅ Mobile search below header
+- ✅ Search available on all pages
+- ✅ Responsive layout
+
+### Tech Stack Added:
+```
+Search: Yahoo Finance search API
+Dynamic Routes: Next.js [symbol] pattern
+Auto-complete: Custom debounced search
+State Management: React hooks
+```
+
+### Files Created/Modified:
+```
+✅ app/api/stocks/search/route.ts (NEW - 55 lines)
+✅ app/api/stocks/[symbol]/route.ts (NEW - 85 lines)
+✅ components/StockSearch.tsx (NEW - 150 lines)
+✅ app/stocks/[symbol]/page.tsx (NEW - 250 lines)
+✅ components/Header.tsx (UPDATED - added search)
+```
+
+### Issues Resolved:
+
+#### Issue 1: Next.js 16 Dynamic Routes
+- **Problem:** Params not accessible in API routes
+- **Error:** "Stock symbol is required" even with valid symbol
+- **Solution:** Changed to `context: { params: Promise<{ symbol: string }> }` and `await context.params`
+- **Lesson:** Next.js 16 requires awaiting params in server components
+
+### Features Working:
+- ✅ Search from any page
+- ✅ Instant results
+- ✅ Navigation to stock details
+- ✅ Complete stock information
+- ✅ Indian Rupee formatting
+- ✅ Responsive on all devices
+
 ---
 
-**Last Updated:** January 17, 2026 - 6:00 PM  
-**Next Update:** After Module 4 completion
+### 🎯 Module 5: Interactive Charts ✅ COMPLETE
+
+**Time Spent:** ~3 hours  
+**Status:** Production Ready
+
+### Achievements:
+
+#### Historical Data API
+- ✅ Created `/api/stocks/[symbol]/history` endpoint
+- ✅ Support for 7 timeframes:
+  - 1D, 5D, 1M, 3M, 6M, 1Y, 5Y
+- ✅ Yahoo Finance historical data
+- ✅ OHLC (Open, High, Low, Close) data
+- ✅ Volume data
+- ✅ Unix timestamp conversion
+- ✅ Date range calculation
+
+#### Chart Library Selection
+- ✅ Initially tried TradingView Lightweight Charts
+- ✅ Encountered compatibility issues
+- ✅ Switched to Recharts (simpler, more reliable)
+- ✅ Installed recharts package
+
+#### Chart Component
+- ✅ Built StockChart component with Recharts
+- ✅ Area chart with gradient fill
+- ✅ Green for price increase (up)
+- ✅ Red for price decrease (down)
+- ✅ 7 timeframe selector buttons
+- ✅ Interactive tooltips
+- ✅ Responsive container
+- ✅ Loading states
+- ✅ Error handling with retry
+
+#### Chart Features
+- ✅ Smooth animations
+- ✅ Auto-scaling Y-axis
+- ✅ Date labels on X-axis
+- ✅ Grid lines for readability
+- ✅ Indian Rupee (₹) formatting
+- ✅ Data point count display
+- ✅ Up/Down indicator
+
+#### Integration
+- ✅ Added chart to stock detail page
+- ✅ Positioned between price and statistics
+- ✅ Seamless loading experience
+- ✅ Error states with retry button
+
+### Tech Stack Added:
+```
+Charts: Recharts 2.x
+Historical Data: Yahoo Finance API
+Data Visualization: Area chart with gradient
+Color Coding: Dynamic based on performance
+```
+
+### Files Created/Modified:
+```
+✅ app/api/stocks/[symbol]/history/route.ts (NEW - 90 lines)
+✅ components/StockChart.tsx (NEW - 200 lines)
+✅ app/stocks/[symbol]/page.tsx (UPDATED - added chart)
+✅ package.json (UPDATED - added recharts)
+```
+
+### Code Statistics (Modules 4 & 5):
+- **Files Created:** 6 new files
+- **Files Modified:** 2 files
+- **Total Lines Added:** ~800+
+- **New Dependencies:** recharts
+- **API Endpoints:** 3 new
+- **Components:** 2 new
+- **Git Commits:** 2
+- **Deployments:** 2
+
+### Issues Resolved:
+
+#### Issue 1: TradingView Lightweight Charts Compatibility
+- **Problem:** `addCandlestickSeries is not a function`
+- **Error:** Method not available in installed version
+- **Solution:** Switched to Recharts library
+- **Lesson:** Choose well-documented, stable libraries for MVP
+
+#### Issue 2: Yahoo Finance Date Format
+- **Problem:** Invalid options error with Date objects
+- **Error:** Historical API failing with certain timeframes
+- **Solution:** Convert to ISO string format `YYYY-MM-DD`
+- **Lesson:** Always check API documentation for exact format requirements
+
+#### Issue 3: Chart Data Format
+- **Problem:** Initially tried OHLC candlestick format
+- **Error:** Library compatibility issues
+- **Solution:** Used simple close price for area chart
+- **Lesson:** Start simple, add complexity later
+
+### Lessons Learned:
+- ✅ Recharts is simpler and more reliable than TradingView for MVP
+- ✅ Area charts are sufficient for stock price visualization
+- ✅ Color coding (green/red) improves UX significantly
+- ✅ Timeframe selection is essential for stock analysis
+- ✅ Loading states prevent confusion during data fetch
+- ✅ MVP doesn't need advanced candlestick charts
+- ✅ Can always upgrade charts later if needed
+
+### Features Working:
+- ✅ 7 different timeframes
+- ✅ Smooth chart animations
+- ✅ Interactive tooltips on hover
+- ✅ Automatic color based on performance
+- ✅ Responsive design (mobile/tablet/desktop)
+- ✅ Fast data loading
+- ✅ Error recovery
 
 ---
 
-**3 modules done! Keep building! 🚀**
+## Summary Statistics (End of Day 3)
+
+### Overall Progress
+
+| Module | Status | Duration | Completion |
+|--------|--------|----------|------------|
+| **Module 1: Foundation** | ✅ Complete | 2 hours | 100% |
+| **Module 2: Auth** | ✅ Complete | 4 hours | 100% |
+| **Module 3: Market Data** | ✅ Complete | 3 hours | 100% |
+| **Module 4: Stock Search** | ✅ Complete | 2 hours | 100% |
+| **Module 5: Charts** | ✅ Complete | 3 hours | 100% |
+| **Module 6: Watchlist** | ⏳ Planned | 2-3 days | 0% |
+| **Module 7: Portfolio** | ⏳ Planned | 4-5 days | 0% |
+| **Module 8: Advanced** | ⏳ Planned | 5-6 days | 0% |
+| **Module 9: Polish** | ⏳ Planned | 3-4 days | 0% |
+
+**MVP Progress:** 5/7 modules (71%) 🎯  
+**Overall Progress:** 5/9 modules (56%)
+
+### Time Tracking
+
+| Date | Hours | Tasks Completed | Modules |
+|------|-------|-----------------|---------|
+| Jan 16, 2026 | 2 | 10+ | Module 1 ✅ |
+| Jan 17, 2026 | 7 | 30+ | Modules 2 & 3 ✅ |
+| Jan 18, 2026 | 5 | 25+ | Modules 4 & 5 ✅ |
+| **Total** | **14** | **65+** | **5/9** |
+
+### Code Metrics (Total)
+
+| Metric | Count |
+|--------|-------|
+| **Files Created** | 31+ |
+| **Lines of Code** | 2,000+ |
+| **Components** | 5 |
+| **Pages** | 3 |
+| **API Routes** | 10 |
+| **Git Commits** | 14+ |
+| **Deployments** | 10+ |
+| **Dependencies** | 359 |
+
+### Live Features
+
+**Production URL:** https://finsight-web-pi.vercel.app
+
+**Working Features:**
+- ✅ Homepage with feature showcase
+- ✅ Google OAuth authentication
+- ✅ User profile with dropdown
+- ✅ `/markets` - Market dashboard
+  - 6 major indices
+  - Top 5 gainers & losers
+- ✅ **Stock search (global header)** 🔍
+- ✅ **Individual stock pages** 📊
+  - Complete stock information
+  - 12 key statistics
+  - **Interactive price charts**
+  - **7 timeframe options**
+  - Historical data visualization
+- ✅ Responsive design (all features)
+- ✅ Error handling (all endpoints)
+
+---
+
+## 🎯 Next Session Goals (Module 6)
+
+**Module 6: Watchlist Management** (2-3 days)
+
+### Planned Tasks:
+- [ ] Database setup (Vercel Postgres)
+- [ ] Watchlist API endpoints (CRUD)
+- [ ] Watchlist page UI
+- [ ] Add/remove stocks functionality
+- [ ] Real-time price updates
+- [ ] Watchlist in header/navigation
+- [ ] User-specific watchlists
+
+### Expected Deliverables:
+- `/watchlist` - Personal watchlist page
+- Add to watchlist button on stock pages
+- Quick access from navigation
+- Real-time price tracking
+
+---
+
+## 🎊 Day 3 Achievements Unlocked
+
+- ✅ First stock search functionality
+- ✅ First auto-complete search
+- ✅ First dynamic stock pages
+- ✅ First interactive charts
+- ✅ First historical data visualization
+- ✅ 5 modules complete!
+- ✅ Over 50% of MVP done!
+- ✅ 71% of core features complete!
+
+---
+
+**Last Updated:** January 18, 2026 - [TIME]  
+**Next Update:** After Module 6 completion
+
+---
+
+**Over halfway to MVP! Amazing progress! 🚀**

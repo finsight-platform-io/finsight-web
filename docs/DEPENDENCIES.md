@@ -472,5 +472,37 @@ npm run build
 - ⏳ Shadcn UI components (as needed)
 
 ---
+## New Dependencies Added (Modules 3-5):
+
+### Module 3: Market Data
+```json
+"yahoo-finance2": "^3.11.2"
+```
+**Purpose:** Fetch live stock market data from Yahoo Finance
+**Usage:** Market indices, stock quotes, historical data
+**Installation:** `npm install yahoo-finance2`
+
+### Module 5: Interactive Charts
+```json
+"recharts": "^2.15.0"
+```
+**Purpose:** Interactive data visualization and charts
+**Usage:** Stock price charts with multiple timeframes
+**Installation:** `npm install recharts`
+
+### Module 5: Advanced Charts (Attempted but not used)
+```json
+"lightweight-charts": "^4.2.1"
+```
+**Status:** Installed but replaced with Recharts
+**Reason:** Compatibility issues, Recharts simpler for MVP
+**Note:** Can be removed or kept for future professional charts
+
+---
+
+## Updated Package Count:
+- **Total Dependencies:** ~360 packages
+- **Direct Dependencies:** ~15 packages
+- **Key Additions:** yahoo-finance2, recharts
 
 **Keep this document updated after each installation!** 📦✨
