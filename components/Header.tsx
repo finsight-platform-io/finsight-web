@@ -29,18 +29,6 @@ export default function Header() {
 
           {/* Navigation - Desktop */}
           <nav className="hidden lg:flex space-x-6 mr-6">
-            <Link
-              href="/markets"
-              className="text-gray-200 hover:text-white font-medium transition-colors text-sm"
-            >
-              Markets
-            </Link>
-            <Link
-              href="/news"
-              className="text-gray-200 hover:text-white font-medium transition-colors text-sm"
-            >
-              News
-            </Link>
             {session?.user && (
               <>
                 <Link
@@ -197,20 +185,6 @@ export default function Header() {
       {showMobileMenu && (
         <div className="lg:hidden border-t border-gray-700 bg-gray-800">
           <nav className="px-4 py-4 space-y-2">
-            <Link
-              href="/markets"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-200 hover:text-white hover:bg-gray-700"
-              onClick={() => setShowMobileMenu(false)}
-            >
-              Markets
-            </Link>
-            <Link
-              href="/news"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-200 hover:text-white hover:bg-gray-700"
-              onClick={() => setShowMobileMenu(false)}
-            >
-              News
-            </Link>
             {session?.user && (
               <>
                 <Link
