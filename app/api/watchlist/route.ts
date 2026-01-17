@@ -1,6 +1,5 @@
 import { sql } from "@vercel/postgres";
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import { auth } from "@/lib/auth";
 
 // GET - Get user's watchlist
