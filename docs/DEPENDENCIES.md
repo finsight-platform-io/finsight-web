@@ -505,4 +505,85 @@ npm run build
 - **Direct Dependencies:** ~15 packages
 - **Key Additions:** yahoo-finance2, recharts
 
+
+# DEPENDENCIES UPDATE - Module 6
+
+Add this to your DEPENDENCIES.md file:
+
+---
+
+## Module 6: Watchlist (Database Integration)
+
+### New Package Added:
+```json
+"@vercel/postgres": "^0.10.0"
+```
+
+**Purpose:** Serverless Postgres client for Vercel  
+**Usage:** Database operations for watchlist feature  
+**Database:** Neon Postgres (serverless)  
+**Installation:** `npm install @vercel/postgres`
+
+**Key Features:**
+- Serverless-optimized
+- Connection pooling
+- SQL template literals
+- TypeScript support
+- Works with Neon, Vercel Postgres
+
+**Example Usage:**
+```typescript
+import { sql } from "@vercel/postgres";
+
+const { rows } = await sql`
+  SELECT * FROM watchlist 
+  WHERE user_email = ${email}
+`;
+```
+
+---
+
+## Updated Package Count:
+- **Total Dependencies:** ~360 packages
+- **Direct Dependencies:** ~16 packages
+- **Key Additions:** 
+  - Module 3: yahoo-finance2
+  - Module 5: recharts
+  - Module 6: @vercel/postgres
+
+---
+
+## Environment Variables Added:
+
+### Local (.env.local):
+```env
+# Database (Neon Postgres)
+DATABASE_URL=postgresql://...
+POSTGRES_URL=postgresql://...
+```
+
+### Production (Vercel):
+```
+DATABASE_URL (added via Vercel dashboard)
+POSTGRES_URL (added via Vercel dashboard)
+```
+
+---
+
+## Database Information:
+
+**Provider:** Neon  
+**Type:** Serverless Postgres  
+**Plan:** Free tier  
+**Region:** Asia Pacific (Singapore)  
+**Connection:** Pooled  
+**Tables:** 1 (watchlist)
+
+---
+
+**Total npm packages:** 360  
+**Database:** Neon Postgres  
+**Storage:** Serverless
+
+
 **Keep this document updated after each installation!** 📦✨

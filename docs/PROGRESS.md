@@ -653,9 +653,295 @@ Color Coding: Dynamic based on performance
 
 ---
 
-**Last Updated:** January 18, 2026 - [TIME]  
-**Next Update:** After Module 6 completion
+# MODULE 6 UPDATE - Add to PROGRESS.md
 
 ---
 
-**Over halfway to MVP! Amazing progress! 🚀**
+## Day 2 (Continued) - January 17, 2026 (Saturday)
+
+### 🎯 Module 6: Watchlist Management ✅ COMPLETE
+
+**Time Spent:** ~3 hours  
+**Status:** Production Ready (Database-Backed)
+
+### Achievements:
+
+#### Database Setup
+- ✅ Setup Neon Postgres database (Free tier)
+- ✅ Created Vercel integration
+- ✅ Selected Asia Pacific (Singapore) region
+- ✅ Database name: `finsight_watchlist_db`
+- ✅ Created watchlist table schema
+- ✅ User-specific data (by email)
+- ✅ Unique constraint (user + symbol)
+
+#### Database Schema
+```sql
+CREATE TABLE watchlist (
+  id SERIAL PRIMARY KEY,
+  user_email VARCHAR(255) NOT NULL,
+  symbol VARCHAR(50) NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(user_email, symbol)
+);
+```
+
+#### API Development
+- ✅ Installed `@vercel/postgres` package
+- ✅ Created `/api/setup-db` - Database initialization
+- ✅ Created `/api/watchlist` with 3 methods:
+  - **GET** - Fetch user's watchlist
+  - **POST** - Add stock to watchlist
+  - **DELETE** - Remove stock from watchlist
+- ✅ Authentication required for all endpoints
+- ✅ User-specific queries (by session email)
+- ✅ Conflict handling (no duplicates)
+
+#### Frontend Components
+- ✅ Created `AddToWatchlist` button component
+  - Bookmark icon
+  - Loading state ("Adding...")
+  - Success state ("Added!" with checkmark)
+  - Auto-reset after 2 seconds
+  - Hidden when not signed in
+- ✅ Created `/watchlist` page
+  - Display all saved stocks
+  - Click stock to view details
+  - Remove button (trash icon)
+  - Empty state with "Explore Markets" CTA
+  - Shows when stock was added
+  - Authentication required
+
+#### Integration
+- ✅ Added button to stock detail pages
+- ✅ Positioned in header section
+- ✅ Updated Header navigation
+  - Watchlist link only shows when signed in
+  - Portfolio link only shows when signed in
+  - Removed non-existent `/stocks` link
+- ✅ Mobile menu updated (conditional links)
+
+#### Environment Configuration
+- ✅ Added `DATABASE_URL` to `.env.local`
+- ✅ Added `POSTGRES_URL` to `.env.local`
+- ✅ Configured Vercel environment variables
+  - `DATABASE_URL` (production)
+  - `POSTGRES_URL` (production)
+
+### Tech Stack Added:
+```
+Database: Neon Postgres (serverless)
+ORM/Client: @vercel/postgres
+Region: Asia Pacific (Singapore)
+Connection: Pooled connection string
+Authentication: NextAuth session email
+```
+
+### Files Created/Modified:
+```
+✅ app/api/setup-db/route.ts (NEW - 35 lines)
+✅ app/api/watchlist/route.ts (NEW - 115 lines)
+✅ components/AddToWatchlist.tsx (NEW - 90 lines)
+✅ app/watchlist/page.tsx (NEW - 200 lines)
+✅ components/Header.tsx (UPDATED - conditional nav)
+✅ app/stocks/[symbol]/page.tsx (UPDATED - added button)
+✅ .env.local (UPDATED - database URLs)
+✅ package.json (UPDATED - @vercel/postgres)
+```
+
+### Code Statistics (Module 6):
+- **Files Created:** 4 new files
+- **Files Modified:** 3 files
+- **Total Lines Added:** ~440+
+- **New Dependencies:** @vercel/postgres
+- **API Endpoints:** 2 new
+- **Database Tables:** 1
+- **Git Commits:** 3
+- **Deployments:** 3
+
+### Issues Resolved:
+
+#### Issue 1: Neon Postgres Integration
+- **Problem:** Vercel changed to marketplace model for databases
+- **Solution:** Used Neon integration from Vercel marketplace
+- **Setup:** Free tier, no credit card required
+- **Lesson:** Check current documentation for platform changes
+
+#### Issue 2: NextAuth v5 Import Error
+- **Problem:** `getServerSession` not exported in NextAuth v5
+- **Error:** Module '"next-auth"' has no exported member 'getServerSession'
+- **Solution:** Use `auth` from `@/lib/auth` instead
+- **Lesson:** NextAuth v5 has different API - use `auth()` not `getServerSession()`
+
+#### Issue 3: Build Passes Locally, Fails in Production
+- **Problem:** Unused import didn't fail locally but failed in production build
+- **Error:** TypeScript compilation error in production
+- **Solution:** Remove unused `getServerSession` import
+- **Lesson:** Always run `npm run build` locally before pushing to catch production errors
+
+#### Issue 4: 500 Error in Production
+- **Problem:** Watchlist API returning 500 error in production
+- **Cause:** Database environment variables not set in Vercel
+- **Solution:** Added `DATABASE_URL` and `POSTGRES_URL` to Vercel environment variables
+- **Lesson:** Always configure environment variables in production deployment settings
+
+#### Issue 5: Conditional Navigation
+- **Problem:** Watchlist/Portfolio links visible even when not signed in
+- **UX Issue:** Users could see links they couldn't use
+- **Solution:** Wrapped links in `{session?.user && <>...</>}` conditionals
+- **Lesson:** Always hide authenticated features from non-authenticated users
+
+### Features Working:
+- ✅ Add stock to personal watchlist
+- ✅ View all saved stocks
+- ✅ Remove stock from watchlist
+- ✅ User-specific data (only see your stocks)
+- ✅ Persistent storage (database-backed)
+- ✅ Real-time updates
+- ✅ Empty state handling
+- ✅ Authentication required
+- ✅ Duplicate prevention
+- ✅ Mobile responsive
+
+### User Flow:
+1. User signs in with Google
+2. Searches for a stock (e.g., "Reliance")
+3. Views stock detail page
+4. Clicks "Add to Watchlist" button
+5. Sees "Added!" confirmation
+6. Navigates to `/watchlist`
+7. Sees all saved stocks
+8. Can click stock to view details
+9. Can remove stock with trash icon
+
+---
+
+## Summary Statistics (End of Day 2)
+
+### Overall Progress
+
+| Module | Status | Duration | Completion |
+|--------|--------|----------|------------|
+| **Module 1: Foundation** | ✅ Complete | 2 hours | 100% |
+| **Module 2: Auth** | ✅ Complete | 4 hours | 100% |
+| **Module 3: Market Data** | ✅ Complete | 3 hours | 100% |
+| **Module 4: Stock Search** | ✅ Complete | 2 hours | 100% |
+| **Module 5: Charts** | ✅ Complete | 3 hours | 100% |
+| **Module 6: Watchlist** | ✅ Complete | 3 hours | 100% |
+| **Module 7: Portfolio** | ⏳ Next | 3-4 days | 0% |
+| **Module 8: Advanced** | ⏳ Planned | 5-6 days | 0% |
+| **Module 9: Polish** | ⏳ Planned | 3-4 days | 0% |
+
+**MVP Progress:** 6/7 modules (86%) 🎯  
+**Overall Progress:** 6/9 modules (67%)
+
+### Time Tracking
+
+| Date | Hours | Tasks Completed | Modules |
+|------|-------|-----------------|---------|
+| Jan 16, 2026 (Fri) | 2 | 10+ | Module 1 ✅ |
+| Jan 17, 2026 (Sat) | 15+ | 60+ | Modules 2-6 ✅ |
+| **Total** | **17+** | **70+** | **6/9** |
+
+### Code Metrics (Total)
+
+| Metric | Count |
+|--------|-------|
+| **Files Created** | 35+ |
+| **Lines of Code** | 2,500+ |
+| **Components** | 7 |
+| **Pages** | 4 |
+| **API Routes** | 12 |
+| **Database Tables** | 1 |
+| **Git Commits** | 17+ |
+| **Deployments** | 13+ |
+| **Dependencies** | 360 |
+
+### Live Features
+
+**Production URL:** https://finsight-web-pi.vercel.app
+
+**Working Features:**
+- ✅ Homepage with feature showcase
+- ✅ Google OAuth authentication
+- ✅ User profile dropdown
+- ✅ Sign in/Sign out
+- ✅ `/markets` - Market dashboard
+  - 6 major indices with live data
+  - Top 5 gainers & losers
+  - Refresh functionality
+- ✅ Stock search (global header)
+- ✅ Individual stock pages
+  - Complete stock information
+  - 12 key statistics
+  - Interactive price charts (7 timeframes)
+  - **Add to Watchlist button**
+- ✅ **`/watchlist` - Personal watchlist**
+  - View saved stocks
+  - Remove stocks
+  - Click to view details
+  - Empty state with CTA
+- ✅ Conditional navigation (auth-based)
+- ✅ Mobile responsive (all features)
+- ✅ Database-backed user data
+- ✅ Error handling (all endpoints)
+
+---
+
+## 🎯 Next Session Goals (Module 7 - FINAL MVP MODULE!)
+
+**Module 7: Portfolio Management** (3-4 days)
+
+### Planned Tasks:
+- [ ] Extend database schema for portfolio
+- [ ] Portfolio API endpoints (CRUD)
+- [ ] Add/Edit holdings functionality
+- [ ] Calculate P&L (Profit & Loss)
+- [ ] Display total investment value
+- [ ] Show portfolio performance
+- [ ] Portfolio page UI
+- [ ] Add transaction history
+
+### Expected Deliverables:
+- `/portfolio` - Personal portfolio page
+- Add holdings form
+- Portfolio summary (total value, P&L)
+- Holdings list with current prices
+- Performance metrics
+- Transaction tracking
+
+---
+
+## 🎊 Day 2 Achievements Unlocked
+
+- ✅ First database integration
+- ✅ First serverless Postgres setup
+- ✅ First user-specific feature
+- ✅ First CRUD operations
+- ✅ First persistent data storage
+- ✅ First Neon database
+- ✅ 6 modules complete!
+- ✅ 86% of MVP done!
+- ✅ Database-backed features working!
+- ✅ Production environment variables configured!
+
+---
+
+## 💾 Database Information
+
+**Provider:** Neon (serverless Postgres)  
+**Plan:** Free tier  
+**Region:** Asia Pacific (Singapore)  
+**Database:** finsight_watchlist_db  
+**Tables:** 1 (watchlist)  
+**Connection:** Pooled (optimized for serverless)
+
+---
+
+**Last Updated:** January 17, 2026 - 8:00 PM  
+**Next Update:** After Module 7 completion
+
+---
+
+**ONE MODULE LEFT FOR MVP! 🚀**
