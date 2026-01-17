@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Footer() {
   return (
     <footer className="border-t border-gray-200 bg-white mt-auto">
@@ -18,11 +20,39 @@ export default function Footer() {
             <h3 className="text-sm font-semibold text-gray-900 mb-3">
               Markets
             </h3>
-            <ul className="space-y-2 text-sm text-gray-600">
-              <li>Nifty 50</li>
-              <li>Sensex</li>
-              <li>Bank Nifty</li>
-              <li>NSE Stocks</li>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link 
+                  href="/stocks/^NSEI" 
+                  className="text-gray-600 hover:text-blue-600 transition-colors"
+                >
+                  Nifty 50
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/stocks/^BSESN" 
+                  className="text-gray-600 hover:text-blue-600 transition-colors"
+                >
+                  Sensex
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/stocks/^NSEBANK" 
+                  className="text-gray-600 hover:text-blue-600 transition-colors"
+                >
+                  Bank Nifty
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/markets" 
+                  className="text-gray-600 hover:text-blue-600 transition-colors"
+                >
+                  NSE Stocks
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -31,11 +61,29 @@ export default function Footer() {
             <h3 className="text-sm font-semibold text-gray-900 mb-3">
               Tools
             </h3>
-            <ul className="space-y-2 text-sm text-gray-600">
-              <li>Stock Screener</li>
-              <li>Watchlist</li>
-              <li>Portfolio Tracker</li>
-              <li>Market Calendar</li>
+            <ul className="space-y-2 text-sm">
+              <li className="text-gray-400">
+                Stock Screener <span className="text-xs">(Coming Soon)</span>
+              </li>
+              <li>
+                <Link 
+                  href="/watchlist" 
+                  className="text-gray-600 hover:text-blue-600 transition-colors"
+                >
+                  Watchlist
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/portfolio" 
+                  className="text-gray-600 hover:text-blue-600 transition-colors"
+                >
+                  Portfolio Tracker
+                </Link>
+              </li>
+              <li className="text-gray-400">
+                Market Calendar <span className="text-xs">(Coming Soon)</span>
+              </li>
             </ul>
           </div>
 
@@ -44,10 +92,31 @@ export default function Footer() {
             <h3 className="text-sm font-semibold text-gray-900 mb-3">
               Legal
             </h3>
-            <ul className="space-y-2 text-sm text-gray-600">
-              <li>Privacy Policy</li>
-              <li>Terms of Service</li>
-              <li>Disclaimer</li>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link 
+                  href="/privacy" 
+                  className="text-gray-600 hover:text-blue-600 transition-colors"
+                >
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/terms" 
+                  className="text-gray-600 hover:text-blue-600 transition-colors"
+                >
+                  Terms of Service
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/disclaimer" 
+                  className="text-gray-600 hover:text-blue-600 transition-colors"
+                >
+                  Disclaimer
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
@@ -60,5 +129,5 @@ export default function Footer() {
         </div>
       </div>
     </footer>
-  )
+  );
 }
