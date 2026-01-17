@@ -5,6 +5,7 @@ import { useSession, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import TopBrokersSection from "@/components/TopBrokersSection";
+import NewsCarousel from "@/components/NewsCarousel";
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -123,50 +124,11 @@ export default function Home() {
               Monitor your investments with real-time P&L calculations
             </p>
           </button>
-
-          {/* Feature 4 */}
-          <Link
-            href="/markets"
-            className="bg-white p-8 rounded-lg shadow-sm border border-gray-200 hover:shadow-md hover:border-blue-300 transition-all cursor-pointer"
-          >
-            <div className="text-4xl mb-4">📈</div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-3">
-              Interactive Charts
-            </h3>
-            <p className="text-gray-600">
-              Analyze price trends with multiple timeframes and detailed charts
-            </p>
-          </Link>
-
-          {/* Feature 5 */}
-          <Link
-            href="/news"
-            className="bg-white p-8 rounded-lg shadow-sm border border-gray-200 hover:shadow-md hover:border-blue-300 transition-all cursor-pointer"
-          >
-            <div className="text-4xl mb-4">📰</div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-3">
-              Market News
-            </h3>
-            <p className="text-gray-600">
-              Stay updated with latest market news and insights on stocks
-            </p>
-          </Link>
-
-          {/* Feature 6 */}
-          <Link
-            href="/markets"
-            className="bg-white p-8 rounded-lg shadow-sm border border-gray-200 hover:shadow-md hover:border-blue-300 transition-all cursor-pointer"
-          >
-            <div className="text-4xl mb-4">📱</div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-3">
-              Mobile Ready
-            </h3>
-            <p className="text-gray-600">
-              Access your portfolio on any device, anywhere, anytime
-            </p>
-          </Link>
         </div>
       </div>
+
+      {/* Latest News Carousel */}
+      <NewsCarousel />
 
       {/* Top Brokers Section */}
       <TopBrokersSection />

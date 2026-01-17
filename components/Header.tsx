@@ -13,13 +13,13 @@ export default function Header() {
   const [showSignInModal, setShowSignInModal] = useState(false);
 
   return (
-    <header className="bg-white shadow-sm border-b">
+    <header className="bg-gray-800 shadow-sm border-b border-gray-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2 flex-shrink-0">
             <span className="text-2xl">📈</span>
-            <span className="text-xl font-bold text-gray-900">Finsight</span>
+            <span className="text-xl font-bold text-white">Finsight</span>
           </Link>
 
           {/* Search Bar - Desktop */}
@@ -31,13 +31,13 @@ export default function Header() {
           <nav className="hidden lg:flex space-x-6 mr-6">
             <Link
               href="/markets"
-              className="text-gray-700 hover:text-blue-600 font-medium transition-colors text-sm"
+              className="text-gray-200 hover:text-white font-medium transition-colors text-sm"
             >
               Markets
             </Link>
             <Link
               href="/news"
-              className="text-gray-700 hover:text-blue-600 font-medium transition-colors text-sm"
+              className="text-gray-200 hover:text-white font-medium transition-colors text-sm"
             >
               News
             </Link>
@@ -45,13 +45,13 @@ export default function Header() {
               <>
                 <Link
                   href="/watchlist"
-                  className="text-gray-700 hover:text-blue-600 font-medium transition-colors text-sm"
+                  className="text-gray-200 hover:text-white font-medium transition-colors text-sm"
                 >
                   Watchlist
                 </Link>
                 <Link
                   href="/portfolio"
-                  className="text-gray-700 hover:text-blue-600 font-medium transition-colors text-sm"
+                  className="text-gray-200 hover:text-white font-medium transition-colors text-sm"
                 >
                   Portfolio
                 </Link>
@@ -64,7 +64,7 @@ export default function Header() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setShowMobileMenu(!showMobileMenu)}
-              className="lg:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100"
+              className="lg:hidden p-2 rounded-md text-gray-200 hover:bg-gray-700"
             >
               <svg
                 className="w-6 h-6"
@@ -171,14 +171,14 @@ export default function Header() {
               <div className="hidden md:flex items-center space-x-3 text-sm">
                 <button
                   onClick={() => setShowSignInModal(true)}
-                  className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                  className="text-gray-200 hover:text-white font-medium transition-colors"
                 >
                   Sign In
                 </button>
-                <span className="text-gray-400">/</span>
+                <span className="text-gray-500">/</span>
                 <button
                   onClick={() => setShowSignInModal(true)}
-                  className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                  className="text-gray-200 hover:text-white font-medium transition-colors"
                 >
                   Free Sign Up
                 </button>
@@ -195,18 +195,18 @@ export default function Header() {
 
       {/* Mobile Menu */}
       {showMobileMenu && (
-        <div className="lg:hidden border-t border-gray-200 bg-white">
+        <div className="lg:hidden border-t border-gray-700 bg-gray-800">
           <nav className="px-4 py-4 space-y-2">
             <Link
               href="/markets"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+              className="block px-3 py-2 rounded-md text-base font-medium text-gray-200 hover:text-white hover:bg-gray-700"
               onClick={() => setShowMobileMenu(false)}
             >
               Markets
             </Link>
             <Link
               href="/news"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+              className="block px-3 py-2 rounded-md text-base font-medium text-gray-200 hover:text-white hover:bg-gray-700"
               onClick={() => setShowMobileMenu(false)}
             >
               News
@@ -215,14 +215,14 @@ export default function Header() {
               <>
                 <Link
                   href="/watchlist"
-                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-200 hover:text-white hover:bg-gray-700"
                   onClick={() => setShowMobileMenu(false)}
                 >
                   Watchlist
                 </Link>
                 <Link
                   href="/portfolio"
-                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-200 hover:text-white hover:bg-gray-700"
                   onClick={() => setShowMobileMenu(false)}
                 >
                   Portfolio
@@ -261,30 +261,30 @@ export default function Header() {
       )}
 
       {/* Sub-Navigation Bar */}
-      <div className="bg-blue-700 border-b border-blue-800">
+      <div className="bg-gradient-to-r from-orange-500 to-yellow-500 border-b border-orange-600">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav className="flex space-x-6 overflow-x-auto">
             <Link
               href="/markets"
-              className="text-white hover:text-cyan-200 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-cyan-300"
+              className="text-white hover:text-orange-100 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-white"
             >
               Major Indices
             </Link>
             <Link
               href="/markets#gainers"
-              className="text-white hover:text-cyan-200 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-cyan-300"
+              className="text-white hover:text-orange-100 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-white"
             >
               Top Gainers
             </Link>
             <Link
               href="/markets#losers"
-              className="text-white hover:text-cyan-200 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-cyan-300"
+              className="text-white hover:text-orange-100 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-white"
             >
               Top Losers
             </Link>
             <Link
               href="/news"
-              className="text-white hover:text-cyan-200 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-cyan-300"
+              className="text-white hover:text-orange-100 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-white"
             >
               Market News
             </Link>
@@ -292,13 +292,13 @@ export default function Header() {
               <>
                 <Link
                   href="/watchlist"
-                  className="text-white hover:text-cyan-200 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-cyan-300"
+                  className="text-white hover:text-orange-100 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-white"
                 >
                   My Watchlist
                 </Link>
                 <Link
                   href="/portfolio"
-                  className="text-white hover:text-cyan-200 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-cyan-300"
+                  className="text-white hover:text-orange-100 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-white"
                 >
                   My Portfolio
                 </Link>
