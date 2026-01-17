@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import StockChart from "@/components/StockChart";
+import AddToWatchlist from "@/components/AddToWatchlist";
 
 interface StockData {
   symbol: string;
@@ -162,6 +163,11 @@ export default function StockDetailPage() {
                 {stock.marketState}
               </span>
             </div>
+          </div>
+          
+          {/* Add to Watchlist Button */}
+          <div>
+            <AddToWatchlist symbol={stock.symbol} name={stock.name} />
           </div>
         </div>
 

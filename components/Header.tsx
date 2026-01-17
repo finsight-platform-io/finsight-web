@@ -33,24 +33,22 @@ export default function Header() {
             >
               Markets
             </Link>
-            <Link
-              href="/stocks"
-              className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
-            >
-              Stocks
-            </Link>
-            <Link
-              href="/watchlist"
-              className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
-            >
-              Watchlist
-            </Link>
-            <Link
-              href="/portfolio"
-              className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
-            >
-              Portfolio
-            </Link>
+            {session?.user && (
+              <>
+                <Link
+                  href="/watchlist"
+                  className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                >
+                  Watchlist
+                </Link>
+                <Link
+                  href="/portfolio"
+                  className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                >
+                  Portfolio
+                </Link>
+              </>
+            )}
           </nav>
 
           {/* Right Section */}
@@ -208,27 +206,24 @@ export default function Header() {
             >
               Markets
             </Link>
-            <Link
-              href="/stocks"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-              onClick={() => setShowMobileMenu(false)}
-            >
-              Stocks
-            </Link>
-            <Link
-              href="/watchlist"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-              onClick={() => setShowMobileMenu(false)}
-            >
-              Watchlist
-            </Link>
-            <Link
-              href="/portfolio"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-              onClick={() => setShowMobileMenu(false)}
-            >
-              Portfolio
-            </Link>
+            {session?.user && (
+              <>
+                <Link
+                  href="/watchlist"
+                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                  onClick={() => setShowMobileMenu(false)}
+                >
+                  Watchlist
+                </Link>
+                <Link
+                  href="/portfolio"
+                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                  onClick={() => setShowMobileMenu(false)}
+                >
+                  Portfolio
+                </Link>
+              </>
+            )}
           </nav>
         </div>
       )}
