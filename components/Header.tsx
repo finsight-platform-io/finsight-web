@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useState } from "react";
+import StockSearch from "./StockSearch";
 
 export default function Header() {
   const { data: session, status } = useSession();
@@ -18,29 +19,34 @@ export default function Header() {
             <span className="text-xl font-bold text-gray-900">Finsight</span>
           </Link>
 
+          {/* Search Bar - Desktop */}
+          <div className="hidden md:flex flex-1 max-w-xl mx-8">
+            <StockSearch />
+          </div>
+
           {/* Navigation */}
-          <nav className="hidden md:flex space-x-8">
+          <nav className="hidden lg:flex space-x-6">
             <Link
               href="/markets"
-              className="text-gray-700 hover:text-blue-600 font-medium"
+              className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
             >
               Markets
             </Link>
             <Link
               href="/stocks"
-              className="text-gray-700 hover:text-blue-600 font-medium"
+              className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
             >
               Stocks
             </Link>
             <Link
               href="/watchlist"
-              className="text-gray-700 hover:text-blue-600 font-medium"
+              className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
             >
               Watchlist
             </Link>
             <Link
               href="/portfolio"
-              className="text-gray-700 hover:text-blue-600 font-medium"
+              className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
             >
               Portfolio
             </Link>
@@ -151,6 +157,11 @@ export default function Header() {
               </button>
             )}
           </div>
+        </div>
+
+        {/* Mobile Search Bar */}
+        <div className="md:hidden pb-4">
+          <StockSearch />
         </div>
       </div>
     </header>
