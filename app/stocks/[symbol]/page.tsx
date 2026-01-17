@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import StockChart from "@/components/StockChart";
 
 interface StockData {
   symbol: string;
@@ -195,6 +196,11 @@ export default function StockDetailPage() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Stock Chart */}
+      <div className="mb-8">
+        <StockChart symbol={symbol} />
       </div>
 
       {/* Key Statistics Grid */}
