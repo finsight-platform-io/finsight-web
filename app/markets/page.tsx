@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 interface IndexData {
   id: string;
@@ -242,9 +243,10 @@ export default function MarketsPage() {
 
                 <div className="space-y-3">
                   {movers?.gainers.map((stock, index) => (
-                    <div
+                    <Link
                       key={stock.symbol}
-                      className="flex items-center justify-between p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
+                      href={`/stocks/${stock.symbol}`}
+                      className="flex items-center justify-between p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors cursor-pointer block"
                     >
                       <div className="flex-1">
                         <div className="flex items-center space-x-2">
@@ -270,7 +272,7 @@ export default function MarketsPage() {
                           +{formatPercent(stock.changePercent)}%
                         </p>
                       </div>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -286,9 +288,10 @@ export default function MarketsPage() {
 
                 <div className="space-y-3">
                   {movers?.losers.map((stock, index) => (
-                    <div
+                    <Link
                       key={stock.symbol}
-                      className="flex items-center justify-between p-3 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
+                      href={`/stocks/${stock.symbol}`}
+                      className="flex items-center justify-between p-3 bg-red-50 rounded-lg hover:bg-red-100 transition-colors cursor-pointer block"
                     >
                       <div className="flex-1">
                         <div className="flex items-center space-x-2">
@@ -314,7 +317,7 @@ export default function MarketsPage() {
                           {formatPercent(stock.changePercent)}%
                         </p>
                       </div>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               </div>
