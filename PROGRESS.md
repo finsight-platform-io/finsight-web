@@ -2,7 +2,8 @@
 
 **Project:** Finsight - Indian Stock Market Platform  
 **Developer:** Prasanth Pulipakala  
-**GitHub:** https://github.com/prasanth-techbite/finsight-web  
+**GitHub:** https://github.com/finsight-platform-io/finsight-web  
+**Organization:** https://github.com/finsight-platform-io  
 **Live URL:** https://finsight-web-pi.vercel.app/
 
 ---
@@ -49,106 +50,187 @@
 #### Code Development
 - ✅ Created `components/` folder
 - ✅ Built Header component with navigation
-  - Logo with "📈 Finsight"
-  - Navigation links (Markets, Stocks, Watchlist, Portfolio)
-  - Sign In button
-  - Responsive design
 - ✅ Built Footer component
-  - 4-column layout (About, Markets, Tools, Legal)
-  - Copyright notice
-  - Disclaimer text
 - ✅ Updated `app/layout.tsx` with Header/Footer
 - ✅ Created professional homepage (`app/page.tsx`)
-  - Hero section with gradient background
-  - 6 feature cards (📊 📈 💼 👁️ 🔔 📰)
-  - CTA section
-  - Fully responsive design
-
-#### Documentation
-- ✅ Created comprehensive README.md
-  - Project overview
-  - Tech stack details
-  - Features list
-  - Installation instructions
-  - Project structure
-  - Development roadmap
-  - License & disclaimer
-  - Contact information
-  - Professional badges
 
 #### Git & Deployment
 - ✅ Made 4 commits to GitHub
-  - Initial Next.js setup
-  - README conflict resolution
-  - Header/Footer/Homepage addition
-  - README documentation update
 - ✅ Connected to Vercel
 - ✅ Deployed to production: `finsight-web-pi.vercel.app`
-- ✅ Configured auto-deployment (push to deploy)
-- ✅ 2 successful deployments
-
-### Tech Stack Implemented:
-```
-Frontend: Next.js 16.1.2 + React 18 + TypeScript
-Styling: TailwindCSS
-Components: Custom (Header, Footer, Homepage)
-Version Control: Git + GitHub
-Hosting: Vercel
-Deployment: Automatic on push to main
-```
-
-### Files Created:
-```
-✅ components/Header.tsx (90 lines)
-✅ components/Footer.tsx (85 lines)
-✅ app/layout.tsx (updated)
-✅ app/page.tsx (updated, 150+ lines)
-✅ README.md (comprehensive documentation)
-```
-
-### Code Statistics:
-- **Total Lines:** ~500+
-- **Components:** 2 (Header, Footer)
-- **Pages:** 1 (Home)
-- **Commits:** 4
-- **Packages:** 356 installed
-
-### Lessons Learned:
-- ✅ Next.js full-stack is simpler than separate frontend/backend
-- ✅ Git Bash needs restart after Node.js installation
-- ✅ Vercel auto-deploys make development faster
-- ✅ TailwindCSS utility classes speed up styling
-- ✅ Component-based architecture keeps code organized
-
-### Issues Resolved:
-- ✅ Git Bash not recognizing `npx` → Restarted terminal
-- ✅ GitHub README merge conflict → Used `git rebase`
-- ✅ Node.js PATH issues → Fixed with restart
+- ✅ Configured auto-deployment
 
 ---
 
-## Day 2 - January 17, 2026 (Friday) - PLANNED
+## Day 2 - January 17, 2026 (Friday)
 
-### 🎯 Module 2: Google OAuth Authentication
-**Estimated Time:** 1 day  
-**Status:** Not Started
+### 🎯 Module 2: Google OAuth Authentication ✅ COMPLETE
 
-### Planned Tasks:
-- [ ] Install NextAuth.js
-- [ ] Configure Google OAuth provider
-- [ ] Create API route: `/api/auth/[...nextauth]`
-- [ ] Add "Sign in with Google" button to Header
-- [ ] Create user profile dropdown
-- [ ] Setup JWT token management
-- [ ] Create protected route wrapper
-- [ ] Test authentication flow
-- [ ] Deploy to production
+**Time Spent:** ~4 hours  
+**Status:** Production Ready (Local + Production)
 
-### Expected Deliverables:
-- Working Google OAuth login
-- User session management
-- Protected routes for future features
-- Profile dropdown with user info
+### Achievements:
+
+#### Organization Setup
+- ✅ Created GitHub Organization: `finsight-platform-io`
+- ✅ Transferred repository from personal to organization
+- ✅ Made repository public (required for Vercel free tier)
+- ✅ Updated local Git remote to organization URL
+- ✅ Reconnected Vercel to organization repository
+- ✅ Updated all documentation with new URLs
+
+#### Google OAuth Configuration
+- ✅ Created Google Cloud Project: "Finsight"
+- ✅ Configured OAuth Consent Screen
+  - App name: Finsight
+  - User support email configured
+  - Developer contact configured
+  - Test users added
+- ✅ Created OAuth 2.0 Client ID
+  - Client Type: Web application
+  - Authorized JavaScript origins (localhost + production)
+  - Authorized redirect URIs (localhost + production)
+- ✅ Obtained Client ID and Client Secret
+
+#### NextAuth v5 Integration
+- ✅ Installed NextAuth v5 beta (`next-auth@5.0.0-beta.30`)
+  - Required for Next.js 16 compatibility
+  - NextAuth v4 only supports Next.js up to v14
+- ✅ Created `lib/auth.ts` with NextAuth configuration
+  - Google provider setup
+  - Session callbacks
+  - basePath configuration
+  - Secret management
+- ✅ Created API route: `app/api/auth/[...nextauth]/route.ts`
+  - Exported GET and POST handlers
+  - Catch-all route for all auth endpoints
+- ✅ Created `components/AuthProvider.tsx`
+  - SessionProvider wrapper
+  - Client-side session management
+- ✅ Updated `components/Header.tsx` with authentication UI
+  - "Sign in with Google" button with logo
+  - User profile dropdown
+  - Sign out functionality
+  - Responsive design
+  - Loading states
+- ✅ Updated `app/layout.tsx`
+  - Wrapped app in AuthProvider
+  - Maintained Header/Footer structure
+
+#### Environment Configuration
+- ✅ Created `.env.local` file (local development)
+  - `NEXTAUTH_URL=http://localhost:3000`
+  - `NEXTAUTH_SECRET` (generated)
+  - `AUTH_TRUST_HOST=true`
+  - `GOOGLE_CLIENT_ID`
+  - `GOOGLE_CLIENT_SECRET`
+- ✅ Added environment variables to Vercel (production)
+  - `NEXTAUTH_URL=https://finsight-web-pi.vercel.app`
+  - All 5 variables configured
+  - Applied to Production, Preview, and Development
+
+#### Testing & Verification
+- ✅ Local development testing
+  - Sign in with Google working
+  - User profile displayed correctly
+  - Dropdown menu functional
+  - Sign out working
+  - Session persistence on refresh
+- ✅ Production deployment testing
+  - Environment variables configured
+  - Google OAuth redirect URIs updated
+  - Production authentication working
+  - Build cache cleared and redeployed
+  - Final verification successful
+
+### Tech Stack Added:
+```
+Authentication: NextAuth.js v5.0.0-beta.30
+OAuth Provider: Google OAuth 2.0
+Session Management: JWT tokens
+Client State: next-auth/react hooks
+Environment: .env.local (gitignored)
+```
+
+### Files Created/Modified:
+```
+✅ lib/auth.ts (NEW - 20 lines)
+✅ app/api/auth/[...nextauth]/route.ts (NEW - 3 lines)
+✅ components/AuthProvider.tsx (NEW - 12 lines)
+✅ components/Header.tsx (UPDATED - 157 lines)
+✅ app/layout.tsx (UPDATED - 35 lines)
+✅ .env.local (NEW - 5 variables, gitignored)
+```
+
+### Code Statistics (Module 2):
+- **Files Created:** 3 new files
+- **Files Modified:** 2 files
+- **Total Lines Added:** ~200+
+- **New Dependencies:** next-auth@beta
+- **Git Commits:** 3
+- **Deployments:** 4+ (with cache clearing and fixes)
+
+### Issues Resolved:
+
+#### Issue 1: NextAuth Version Compatibility
+- **Problem:** NextAuth v4 doesn't support Next.js 16
+- **Error:** `ERESOLVE unable to resolve dependency tree`
+- **Solution:** Installed NextAuth v5 beta which supports Next.js 16
+- **Lesson:** Always check package compatibility with framework version
+
+#### Issue 2: Missing SessionProvider Error
+- **Problem:** `useSession must be wrapped in <SessionProvider />`
+- **Error:** Runtime error on page load
+- **Solution:** Created AuthProvider component with SessionProvider
+- **Lesson:** NextAuth v5 still requires SessionProvider wrapper
+
+#### Issue 3: JSON Parsing Error in Browser
+- **Problem:** `Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+- **Error:** Console error on localhost
+- **Solution:** Added `AUTH_TRUST_HOST=true` to .env.local
+- **Lesson:** NextAuth v5 requires explicit trust host setting
+
+#### Issue 4: Folder Name in Git
+- **Problem:** `[...nextauth]` folder with special characters
+- **Error:** Folder created as `nextauth` instead of `[...nextauth]`
+- **Solution:** Renamed folder to include square brackets: `mv nextauth '[...nextauth]'`
+- **Lesson:** Next.js catch-all routes require exact bracket syntax
+
+#### Issue 5: Production 404 Error
+- **Problem:** `/api/auth/providers` returning 404 in production
+- **Error:** Google Sign In button not appearing in production
+- **Solution:** Added `basePath: "/api/auth"` to NextAuth config
+- **Lesson:** NextAuth v5 needs explicit basePath configuration
+
+#### Issue 6: Vercel Caching Old Code
+- **Problem:** Updated Header.tsx not appearing in production
+- **Error:** Old "Sign In" button instead of "Sign in with Google"
+- **Solution:** Cleared Vercel build cache and forced fresh deployment
+- **Lesson:** Always clear cache when code changes don't appear
+
+#### Issue 7: Organization Repository Access
+- **Problem:** Vercel couldn't access private organization repository
+- **Error:** "Repository is private and owned by organization"
+- **Solution:** Changed repository visibility to public
+- **Lesson:** Vercel free tier doesn't support private org repos
+
+### Lessons Learned:
+- ✅ NextAuth v5 has different syntax than v4 (no NextAuthOptions type)
+- ✅ Next.js 16 requires NextAuth v5 beta
+- ✅ Special characters in folder names need careful handling in Git
+- ✅ Production environment variables must match production URLs
+- ✅ Vercel caching can cause deployment issues - clear when needed
+- ✅ GitHub organizations provide better team management
+- ✅ Public repositories are fine for MVP (secrets stay in .env.local)
+- ✅ Always test authentication in both local and production environments
+
+### Security Best Practices Implemented:
+- ✅ `.env.local` added to `.gitignore` (never committed)
+- ✅ Client ID and Secret stored securely in environment variables
+- ✅ JWT tokens used for session management
+- ✅ HTTPS enforced in production
+- ✅ OAuth redirect URIs whitelisted
+- ✅ Secrets never exposed in client-side code
 
 ---
 
@@ -178,7 +260,7 @@ Deployment: Automatic on push to main
 | Module | Status | Duration | Completion |
 |--------|--------|----------|------------|
 | **Module 1: Foundation** | ✅ Complete | 2 hours | 100% |
-| **Module 2: Auth** | ⏳ Planned | 1 day | 0% |
+| **Module 2: Auth** | ✅ Complete | 4 hours | 100% |
 | **Module 3: Market Data** | ⏳ Planned | 3-4 days | 0% |
 | **Module 4: Stock Details** | ⏳ Planned | 4-5 days | 0% |
 | **Module 5: Charts** | ⏳ Planned | 3-4 days | 0% |
@@ -187,36 +269,40 @@ Deployment: Automatic on push to main
 | **Module 8: Advanced** | ⏳ Planned | 5-6 days | 0% |
 | **Module 9: Polish** | ⏳ Planned | 3-4 days | 0% |
 
-**MVP Progress:** 1/7 modules (14%)  
-**Overall Progress:** 1/9 modules (11%)
+**MVP Progress:** 2/7 modules (29%)  
+**Overall Progress:** 2/9 modules (22%)
 
 ### Time Tracking
 
 | Date | Hours | Tasks Completed | Modules |
 |------|-------|-----------------|---------|
 | Jan 16, 2026 | 2 | 10+ | Module 1 ✅ |
-| **Total** | **2** | **10+** | **1/9** |
+| Jan 17, 2026 | 4 | 15+ | Module 2 ✅ |
+| **Total** | **6** | **25+** | **2/9** |
 
 ### Code Metrics
 
 | Metric | Count |
 |--------|-------|
-| **Files Created** | 15+ |
-| **Lines of Code** | 500+ |
-| **Components** | 2 |
+| **Files Created** | 20+ |
+| **Lines of Code** | 700+ |
+| **Components** | 3 |
 | **Pages** | 1 |
-| **Git Commits** | 4 |
-| **Deployments** | 2 |
-| **Dependencies** | 356 |
+| **API Routes** | 1 |
+| **Git Commits** | 10+ |
+| **Deployments** | 6+ |
+| **Dependencies** | 357 |
 
 ### Repository Stats
 
 | Metric | Value |
 |--------|-------|
-| **Repository** | prasanth-techbite/finsight-web |
+| **Organization** | finsight-platform-io |
+| **Repository** | finsight-web |
+| **Visibility** | Public |
 | **Stars** | 0 |
 | **Forks** | 0 |
-| **Commits** | 4 |
+| **Commits** | 10+ |
 | **Contributors** | 1 |
 | **License** | MIT |
 
@@ -224,12 +310,13 @@ Deployment: Automatic on push to main
 
 ## 🎯 Next Milestones
 
-### Short Term (This Week)
-- [ ] Module 2: Google OAuth (1 day)
+### Short Term (Week 1 - Remaining Days)
+- [x] Module 1: Foundation ✅
+- [x] Module 2: Google OAuth ✅
 - [ ] Module 3: Market Data (3-4 days)
-- [ ] Module 4: Stock Details (4-5 days)
 
 ### Medium Term (Week 2)
+- [ ] Module 4: Stock Details (4-5 days)
 - [ ] Module 5: Interactive Charts
 - [ ] Module 6: Watchlist Management
 - [ ] Module 7: Portfolio Tracking
@@ -241,54 +328,13 @@ Deployment: Automatic on push to main
 
 ---
 
-## 📝 Daily Update Template
-
-```markdown
-## Day X - [Date] ([Day of Week])
-
-### 🎯 Module X: [Module Name]
-**Time Spent:** X hours  
-**Status:** [In Progress / Complete / Blocked]
-
-### Achievements:
-- ✅ Task 1
-- ✅ Task 2
-- ✅ Task 3
-
-### Code Changes:
-- Files created: X
-- Files modified: X
-- Lines added: X
-
-### Commits:
-- Commit 1: Description
-- Commit 2: Description
-
-### Deployments:
-- Deployment 1: URL + Status
-
-### Issues Encountered:
-- Issue 1: Description + Resolution
-- Issue 2: Description + Resolution
-
-### Lessons Learned:
-- Lesson 1
-- Lesson 2
-
-### Tomorrow's Plan:
-- [ ] Task 1
-- [ ] Task 2
-```
-
----
-
 ## 🔗 Important Links
 
 - **Live Site:** https://finsight-web-pi.vercel.app/
-- **GitHub Repo:** https://github.com/prasanth-techbite/finsight-web
-- **Vercel Dashboard:** https://vercel.com/prasanth-techbite
-- **Roadmap Document:** [Link to roadmap artifact]
-- **Tech Stack Doc:** [Link to tech stack doc]
+- **GitHub Organization:** https://github.com/finsight-platform-io
+- **GitHub Repository:** https://github.com/finsight-platform-io/finsight-web
+- **Vercel Dashboard:** https://vercel.com/
+- **Google Cloud Console:** https://console.cloud.google.com/
 
 ---
 
@@ -313,19 +359,40 @@ git push                      # Deploy automatically
 ### Useful Commands
 ```bash
 # Development
-npm run dev                   # Start dev server
+npm run dev                   # Start dev server (http://localhost:3000)
 npm run build                 # Build for production
 npm run start                 # Start production server
 
 # Git
 git log --oneline            # View commit history
 git diff                     # See changes
+git remote -v                # Check remote URLs
+
+# Environment
+cat .env.local               # View environment variables (local only)
+```
+
+### Authentication Testing
+```bash
+# Local
+http://localhost:3000 → Sign in with Google
+
+# Production
+https://finsight-web-pi.vercel.app → Sign in with Google
+
+# API Routes
+/api/auth/providers          # List available providers
+/api/auth/session           # Get current session
+/api/auth/signin            # Sign in page
+/api/auth/signout           # Sign out
+/api/auth/callback/google   # OAuth callback
 ```
 
 ---
 
 ## 🎊 Achievements Unlocked
 
+### Day 1
 - ✅ First Next.js project
 - ✅ First TypeScript project
 - ✅ First TailwindCSS project
@@ -334,10 +401,46 @@ git diff                     # See changes
 - ✅ First professional README
 - ✅ First live website on internet
 
+### Day 2
+- ✅ First GitHub Organization
+- ✅ First OAuth implementation
+- ✅ First NextAuth.js integration
+- ✅ First authenticated application
+- ✅ First environment variable management
+- ✅ First Google Cloud project
+- ✅ First production authentication
+- ✅ Repository transferred to organization
+
 ---
 
-**Last Updated:** January 16, 2026 - 11:45 PM  
-**Next Update:** After Module 2 completion
+## 📚 Documentation Created
+
+1. ✅ **PROGRESS.md** - Development progress tracker
+2. ✅ **README.md** - Project overview and setup
+3. ✅ **GIT_STRATEGY.md** - Git branching strategy
+4. ✅ **DEPENDENCIES.md** - Dependency tracking
+5. ✅ **authentication-setup-guide.md** - Auth setup instructions
+
+---
+
+## 🚀 Ready for Module 3!
+
+**Current Status:**
+- ✅ Foundation Complete
+- ✅ Authentication Complete
+- ⏳ Market Data Integration - Next Up!
+
+**Next Session Goals:**
+1. Setup database (Vercel Postgres)
+2. Setup caching (Upstash Redis)
+3. Integrate market data API (Yahoo Finance)
+4. Build market indices dashboard
+5. Implement real-time updates
+
+---
+
+**Last Updated:** January 17, 2026 - 12:30 PM  
+**Next Update:** After Module 3 completion
 
 ---
 
