@@ -8,6 +8,7 @@ import StockSearch from "./StockSearch";
 export default function Header() {
   const { data: session, status } = useSession();
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   return (
     <header className="bg-white shadow-sm border-b">
@@ -24,7 +25,7 @@ export default function Header() {
             <StockSearch />
           </div>
 
-          {/* Navigation */}
+          {/* Navigation - Desktop */}
           <nav className="hidden lg:flex space-x-6">
             <Link
               href="/markets"
@@ -52,10 +53,40 @@ export default function Header() {
             </Link>
           </nav>
 
-          {/* Auth Section */}
+          {/* Right Section */}
           <div className="flex items-center space-x-4">
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setShowMobileMenu(!showMobileMenu)}
+              className="lg:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                {showMobileMenu ? (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                ) : (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                )}
+              </svg>
+            </button>
+
+            {/* Auth Section */}
             {status === "loading" ? (
-              <div className="text-gray-500">Loading...</div>
+              <div className="text-gray-500 text-sm">Loading...</div>
             ) : session?.user ? (
               // User is logged in - show profile dropdown
               <div className="relative">
@@ -78,7 +109,7 @@ export default function Header() {
                     {session.user.name}
                   </span>
                   <svg
-                    className="w-4 h-4 text-gray-500"
+                    className="hidden md:block w-4 h-4 text-gray-500"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -133,7 +164,7 @@ export default function Header() {
               // User is not logged in - show Sign In button
               <button
                 onClick={() => signIn("google")}
-                className="flex items-center space-x-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium py-2 px-4 rounded-lg transition-colors"
+                className="flex items-center space-x-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium py-2 px-4 rounded-lg transition-colors text-sm"
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24">
                   <path
@@ -153,7 +184,8 @@ export default function Header() {
                     d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                   />
                 </svg>
-                <span>Sign in with Google</span>
+                <span className="hidden sm:inline">Sign in with Google</span>
+                <span className="sm:hidden">Sign in</span>
               </button>
             )}
           </div>
@@ -164,6 +196,42 @@ export default function Header() {
           <StockSearch />
         </div>
       </div>
+
+      {/* Mobile Menu */}
+      {showMobileMenu && (
+        <div className="lg:hidden border-t border-gray-200 bg-white">
+          <nav className="px-4 py-4 space-y-2">
+            <Link
+              href="/markets"
+              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+              onClick={() => setShowMobileMenu(false)}
+            >
+              Markets
+            </Link>
+            <Link
+              href="/stocks"
+              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+              onClick={() => setShowMobileMenu(false)}
+            >
+              Stocks
+            </Link>
+            <Link
+              href="/watchlist"
+              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+              onClick={() => setShowMobileMenu(false)}
+            >
+              Watchlist
+            </Link>
+            <Link
+              href="/portfolio"
+              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+              onClick={() => setShowMobileMenu(false)}
+            >
+              Portfolio
+            </Link>
+          </nav>
+        </div>
+      )}
     </header>
   );
 }
