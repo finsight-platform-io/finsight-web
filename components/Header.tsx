@@ -209,27 +209,6 @@ export default function Header() {
       {showMobileMenu && (
         <div className="lg:hidden border-t border-gray-700 bg-gray-800">
           <nav className="px-4 py-4 space-y-2">
-            <Link
-              href="/markets"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-200 hover:text-white hover:bg-gray-700"
-              onClick={() => setShowMobileMenu(false)}
-            >
-              Markets
-            </Link>
-            <Link
-              href="/screener"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-200 hover:text-white hover:bg-gray-700"
-              onClick={() => setShowMobileMenu(false)}
-            >
-              Stock Screener
-            </Link>
-            <Link
-              href="/news"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-200 hover:text-white hover:bg-gray-700"
-              onClick={() => setShowMobileMenu(false)}
-            >
-              News
-            </Link>
             {session?.user && (
               <>
                 <Link
@@ -237,14 +216,14 @@ export default function Header() {
                   className="block px-3 py-2 rounded-md text-base font-medium text-gray-200 hover:text-white hover:bg-gray-700"
                   onClick={() => setShowMobileMenu(false)}
                 >
-                  Watchlist
+                  My Watchlist
                 </Link>
                 <Link
                   href="/portfolio"
                   className="block px-3 py-2 rounded-md text-base font-medium text-gray-200 hover:text-white hover:bg-gray-700"
                   onClick={() => setShowMobileMenu(false)}
                 >
-                  Portfolio
+                  My Portfolio
                 </Link>
               </>
             )}
@@ -255,7 +234,7 @@ export default function Header() {
                     setShowSignInModal(true);
                     setShowMobileMenu(false);
                   }}
-                  className="w-full text-center text-gray-700 font-medium px-4 py-2 border border-gray-300 rounded hover:bg-gray-50"
+                  className="w-full text-center text-white font-medium px-4 py-2 border border-gray-500 rounded hover:bg-gray-700"
                 >
                   Sign In
                 </button>
