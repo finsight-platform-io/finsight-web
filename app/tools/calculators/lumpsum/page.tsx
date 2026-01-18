@@ -264,7 +264,7 @@ export default function LumpsumCalculatorPage() {
                 <p className="text-sm font-medium text-green-900 mb-2">💡 Key Insights:</p>
                 <ul className="text-sm text-green-800 space-y-1">
                   <li>• Your money will grow {(results.totalValue / results.totalInvestment).toFixed(2)}x in {timePeriod} years</li>
-                  <li>• Annual return: ₹{(results.estimatedReturns / timePeriod).toFixed(0).toLocaleString("en-IN")}/year on average</li>
+                  <li>• Annual return: ₹{Math.round(results.estimatedReturns / timePeriod).toLocaleString("en-IN")}/year on average</li>
                   <li>• Power of compounding adds {formatCurrency(results.estimatedReturns)} extra!</li>
                 </ul>
               </div>
