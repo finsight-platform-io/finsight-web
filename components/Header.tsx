@@ -307,19 +307,7 @@ export default function Header() {
               href="/markets"
               className="text-white hover:text-orange-100 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-white"
             >
-              Major Indices
-            </Link>
-            <Link
-              href="/markets#gainers"
-              className="text-white hover:text-orange-100 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-white"
-            >
-              Top Gainers
-            </Link>
-            <Link
-              href="/markets#losers"
-              className="text-white hover:text-orange-100 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-white"
-            >
-              Top Losers
+              Markets
             </Link>
             {/* Stock Screener */}
             <Link
@@ -329,7 +317,7 @@ export default function Header() {
               <span>🔍</span>
               <span>Screener</span>
             </Link>
-            {/* Tools & Calculators - NEW */}
+            {/* Tools & Calculators */}
             <Link
               href="/tools"
               className="text-white hover:text-orange-100 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-white inline-flex items-center gap-1"
@@ -337,7 +325,7 @@ export default function Header() {
               <span>🧮</span>
               <span>Tools</span>
             </Link>
-            
+            {/* Charts */}
             <Link
               href="/charts"
               className="text-white hover:text-orange-100 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-white inline-flex items-center gap-1"
@@ -345,7 +333,6 @@ export default function Header() {
               <span>📊</span>
               <span>Charts</span>
             </Link>
-
             <Link
               href="/news"
               className="text-white hover:text-orange-100 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-white"

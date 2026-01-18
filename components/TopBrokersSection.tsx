@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function TopBrokersSection() {
   const brokers = [
@@ -6,33 +7,41 @@ export default function TopBrokersSection() {
       id: 1,
       name: "Zerodha",
       rating: 4.8,
-      logo: "https://zerodha.com/static/images/logo.svg",
+      logo: "/brokers/zerodha.svg",
+      bgColor: "bg-blue-50",
       features: ["Zero brokerage on equity delivery", "₹20 per order for intraday"],
-      link: "https://zerodha.com",
+      link: "https://zerodha.com/open-account",
+      reviewLink: "https://www.trustpilot.com/review/zerodha.com",
     },
     {
       id: 2,
       name: "Upstox",
       rating: 4.6,
-      logo: "https://upstox.com/app/themes/upstox/dist/img/logo/logo-dark.svg",
+      logo: "/brokers/upstox.svg",
+      bgColor: "bg-purple-50",
       features: ["₹20 per order", "Free account opening"],
-      link: "https://upstox.com",
+      link: "https://upstox.com/open-demat-account",
+      reviewLink: "https://play.google.com/store/apps/details?id=com.upstox.pro&hl=en_IN",
     },
     {
       id: 3,
       name: "Groww",
       rating: 4.7,
-      logo: "https://assets-netstorage.groww.in/web-assets/billion_groww_desktop/prod/_next/static/media/logo.8b1e2714.svg",
+      logo: "/brokers/groww.svg",
+      bgColor: "bg-green-50",
       features: ["Zero commission on delivery", "Simple interface"],
-      link: "https://groww.in",
+      link: "https://groww.in/open-demat-account",
+      reviewLink: "https://www.trustpilot.com/review/groww.in",
     },
     {
       id: 4,
       name: "Angel One",
       rating: 4.5,
-      logo: "https://www.angelone.in/images/angelone-logo.svg",
+      logo: "/brokers/angelone.png",
+      bgColor: "bg-red-50",
       features: ["₹20 per order", "Comprehensive research"],
-      link: "https://www.angelone.in",
+      link: "https://www.angelone.in/open-demat-account",
+      reviewLink: "https://play.google.com/store/apps/details?id=com.msf.angelmobile&hl=en_IN",
     },
   ];
 
@@ -85,17 +94,30 @@ export default function TopBrokersSection() {
           {brokers.map((broker) => (
             <div
               key={broker.id}
-              className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-lg transition-all"
+              className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-lg transition-all hover:scale-105 flex flex-col"
             >
-              {/* Broker Name & Logo */}
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-bold text-gray-900">
-                  {broker.name}
-                </h3>
+              {/* Logo Section - No colored box */}
+              <div className="mb-4 flex items-center justify-center h-20">
+                <img
+                  src={broker.logo}
+                  alt={`${broker.name} logo`}
+                  className="max-w-full max-h-full object-contain"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                    const parent = target.parentElement;
+                    if (parent) {
+                      const text = document.createElement('span');
+                      text.className = 'text-2xl font-bold text-gray-900';
+                      text.textContent = broker.name;
+                      parent.appendChild(text);
+                    }
+                  }}
+                />
               </div>
 
               {/* Rating */}
-              <div className="flex items-center space-x-2 mb-4">
+              <div className="flex items-center justify-center space-x-2 mb-4">
                 <span className="text-2xl font-bold text-gray-900">
                   {broker.rating}
                 </span>
@@ -103,7 +125,7 @@ export default function TopBrokersSection() {
               </div>
 
               {/* Features */}
-              <ul className="space-y-2 mb-6 text-sm text-gray-600">
+              <ul className="space-y-2 mb-6 text-sm text-gray-600 flex-grow">
                 {broker.features.map((feature, index) => (
                   <li key={index} className="flex items-start">
                     <span className="text-green-500 mr-2">✓</span>
@@ -113,7 +135,7 @@ export default function TopBrokersSection() {
               </ul>
 
               {/* Buttons */}
-              <div className="space-y-2">
+              <div>
                 <a
                   href={broker.link}
                   target="_blank"
@@ -122,20 +144,21 @@ export default function TopBrokersSection() {
                 >
                   Open Account
                 </a>
-                <Link
-                  href={`/brokers/${broker.name.toLowerCase()}`}
-                  className="block w-full text-blue-600 text-center py-2 rounded-lg hover:bg-blue-50 transition-colors font-medium border border-blue-200"
-                >
-                  Read Review
-                </Link>
               </div>
-
-              {/* Disclaimer */}
-              <p className="text-xs text-gray-400 mt-4 text-center">
-                External link - Not affiliated
-              </p>
             </div>
           ))}
+        </div>
+
+        {/* Bottom CTA */}
+        <div className="mt-10 text-center">
+          <a
+            href="https://www.5paisa.com/stock-broker-in-india"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block bg-white border-2 border-blue-600 text-blue-600 px-8 py-3 rounded-lg hover:bg-blue-50 transition-colors font-medium"
+          >
+            Compare More Brokers →
+          </a>
         </div>
 
         {/* Disclaimer */}
