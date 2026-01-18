@@ -271,7 +271,7 @@ export default function Header() {
       {/* Sub-Navigation Bar */}
       <div className="bg-gradient-to-r from-orange-500 to-yellow-500 border-b border-orange-600">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <nav className="flex space-x-6 overflow-x-auto">
+          <nav className="flex items-center space-x-6 overflow-x-auto">
             <Link
               href="/markets"
               className="text-white hover:text-orange-100 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-white"
@@ -293,7 +293,7 @@ export default function Header() {
             {/* Stock Screener - NEW */}
             <Link
               href="/screener"
-              className="text-white hover:text-orange-100 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-white flex items-center space-x-1"
+              className="text-white hover:text-orange-100 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-white inline-flex items-center gap-1"
             >
               <span>🔍</span>
               <span>Screener</span>
@@ -312,10 +312,10 @@ export default function Header() {
             </Link>
             <Link
               href="/portfolio"
-              className="text-white hover:text-orange-100 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-white flex items-center space-x-1"
+              className="text-white hover:text-orange-100 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-white inline-flex items-center gap-1"
             >
               {!session?.user && (
-                <span className="text-black-400 text-base">★</span>
+                <span className="text-yellow-300 text-base">★</span>
               )}
               <span>Portfolio</span>
             </Link>
@@ -338,7 +338,7 @@ export default function Header() {
             {/* Finsight Pro - Premium Feature */}
             <Link
               href="/pro"
-              className="flex items-center space-x-1 text-white font-bold py-3 text-sm whitespace-nowrap transition-all border-b-2 border-transparent hover:border-white ml-auto"
+              className="inline-flex items-center gap-1 text-white font-bold py-3 text-sm whitespace-nowrap transition-all border-b-2 border-transparent hover:border-white ml-auto"
             >
               <span>Finsight</span>
               <span className="bg-yellow-300 text-orange-900 px-2 py-0.5 rounded font-bold text-xs">

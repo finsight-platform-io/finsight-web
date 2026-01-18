@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
-import yahooFinance from "yahoo-finance2";
+import YahooFinance from "yahoo-finance2";
+
+// Initialize YahooFinance instance for v3
+const yahooFinance = new YahooFinance();
 
 // Add proper typing for Yahoo Finance quote
 interface YahooQuote {
@@ -159,9 +162,15 @@ async function fetchStockData(symbol: string, sector: string): Promise<Stock | n
     console.log(`Fetching data for ${symbol}...`);
     
     // Type assertion to help TypeScript understand the quote structure
-    const quote = await yahooFinance.quote(symbol) as YahooQuote;
+    const quote = await yahooFinance.quoteSummary(symbol, { 
+      modules: ['price', 'summaryDetail', 'defaultKeyStatistics'] 
+    }) as any;
 
-    if (!quote || !quote.regularMarketPrice) {
+    const price = quote?.price;
+    const summaryDetail = quote?.summaryDetail;
+    const keyStats = quote?.defaultKeyStatistics;
+
+    if (!price || !price.regularMarketPrice) {
       console.log(`No data for ${symbol}`);
       return null;
     }
@@ -171,20 +180,20 @@ async function fetchStockData(symbol: string, sector: string): Promise<Stock | n
     return {
       symbol,
       displaySymbol,
-      name: quote.longName || quote.shortName || displaySymbol,
-      price: quote.regularMarketPrice || 0,
-      change: quote.regularMarketChange || 0,
-      changePercent: quote.regularMarketChangePercent || 0,
-      marketCap: quote.marketCap || 0,
-      marketCapFormatted: formatMarketCap(quote.marketCap || 0),
-      pe: quote.trailingPE || null,
-      pb: quote.priceToBook || null,
-      dividendYield: quote.trailingAnnualDividendYield 
-        ? quote.trailingAnnualDividendYield * 100 
+      name: price.longName || price.shortName || displaySymbol,
+      price: price.regularMarketPrice || 0,
+      change: price.regularMarketChange || 0,
+      changePercent: price.regularMarketChangePercent || 0,
+      marketCap: price.marketCap || 0,
+      marketCapFormatted: formatMarketCap(price.marketCap || 0),
+      pe: keyStats?.trailingPE || null,
+      pb: keyStats?.priceToBook || null,
+      dividendYield: summaryDetail?.dividendYield 
+        ? summaryDetail.dividendYield * 100 
         : null,
-      volume: quote.regularMarketVolume || 0,
-      fiftyTwoWeekHigh: quote.fiftyTwoWeekHigh || 0,
-      fiftyTwoWeekLow: quote.fiftyTwoWeekLow || 0,
+      volume: price.regularMarketVolume || 0,
+      fiftyTwoWeekHigh: summaryDetail?.fiftyTwoWeekHigh || 0,
+      fiftyTwoWeekLow: summaryDetail?.fiftyTwoWeekLow || 0,
       sector,
     };
   } catch (error) {
@@ -199,17 +208,26 @@ export async function GET(request: Request) {
     
     // Get filter parameters
     const sector = searchParams.get("sector") || "All";
-    const minMarketCap = parseFloat(searchParams.get("minMarketCap") || "0") * 1e7; // Convert Cr to actual
-    const maxMarketCap = searchParams.get("maxMarketCap") 
-      ? parseFloat(searchParams.get("maxMarketCap")!) * 1e7 
-      : Infinity;
-    const minPE = parseFloat(searchParams.get("minPE") || "0");
-    const maxPE = parseFloat(searchParams.get("maxPE") || "Infinity");
-    const minPrice = parseFloat(searchParams.get("minPrice") || "0");
-    const maxPrice = parseFloat(searchParams.get("maxPrice") || "Infinity");
-    const minChange = parseFloat(searchParams.get("minChange") || "-Infinity");
-    const maxChange = parseFloat(searchParams.get("maxChange") || "Infinity");
-    const minDividendYield = parseFloat(searchParams.get("minDividendYield") || "0");
+    const minMarketCapParam = searchParams.get("minMarketCap");
+    const maxMarketCapParam = searchParams.get("maxMarketCap");
+    const minPEParam = searchParams.get("minPE");
+    const maxPEParam = searchParams.get("maxPE");
+    const minPriceParam = searchParams.get("minPrice");
+    const maxPriceParam = searchParams.get("maxPrice");
+    const minChangeParam = searchParams.get("minChange");
+    const maxChangeParam = searchParams.get("maxChange");
+    const minDividendYieldParam = searchParams.get("minDividendYield");
+    
+    const minMarketCap = minMarketCapParam ? parseFloat(minMarketCapParam) * 1e7 : null;
+    const maxMarketCap = maxMarketCapParam ? parseFloat(maxMarketCapParam) * 1e7 : null;
+    const minPE = minPEParam ? parseFloat(minPEParam) : null;
+    const maxPE = maxPEParam ? parseFloat(maxPEParam) : null;
+    const minPrice = minPriceParam ? parseFloat(minPriceParam) : null;
+    const maxPrice = maxPriceParam ? parseFloat(maxPriceParam) : null;
+    const minChange = minChangeParam ? parseFloat(minChangeParam) : null;
+    const maxChange = maxChangeParam ? parseFloat(maxChangeParam) : null;
+    const minDividendYield = minDividendYieldParam ? parseFloat(minDividendYieldParam) : null;
+    
     const sortBy = searchParams.get("sortBy") || "marketCap";
     const sortOrder = searchParams.get("sortOrder") || "desc";
     const limit = parseInt(searchParams.get("limit") || "50");
@@ -242,12 +260,21 @@ export async function GET(request: Request) {
     let filteredStocks = stocksData.filter((stock): stock is Stock => {
       if (!stock) return false;
       
-      // Apply filters
-      if (stock.marketCap < minMarketCap || stock.marketCap > maxMarketCap) return false;
-      if (stock.pe !== null && (stock.pe < minPE || stock.pe > maxPE)) return false;
-      if (stock.price < minPrice || stock.price > maxPrice) return false;
-      if (stock.changePercent < minChange || stock.changePercent > maxChange) return false;
-      if (stock.dividendYield !== null && stock.dividendYield < minDividendYield) return false;
+      // Apply filters - only filter if the parameter was provided
+      if (minMarketCap !== null && stock.marketCap < minMarketCap) return false;
+      if (maxMarketCap !== null && stock.marketCap > maxMarketCap) return false;
+      
+      // For P/E, only filter if stock has P/E data AND the filter is set
+      if (minPE !== null && stock.pe !== null && stock.pe < minPE) return false;
+      if (maxPE !== null && stock.pe !== null && stock.pe > maxPE) return false;
+      
+      if (minPrice !== null && stock.price < minPrice) return false;
+      if (maxPrice !== null && stock.price > maxPrice) return false;
+      if (minChange !== null && stock.changePercent < minChange) return false;
+      if (maxChange !== null && stock.changePercent > maxChange) return false;
+      
+      // For dividend yield, only filter if stock has dividend data AND the filter is set
+      if (minDividendYield !== null && stock.dividendYield !== null && stock.dividendYield < minDividendYield) return false;
       
       return true;
     });
@@ -267,12 +294,18 @@ export async function GET(request: Request) {
           bValue = b.changePercent;
           break;
         case "pe":
-          aValue = a.pe || Infinity;
-          bValue = b.pe || Infinity;
+          // Put null values at the end
+          if (a.pe === null) return sortOrder === "desc" ? 1 : -1;
+          if (b.pe === null) return sortOrder === "desc" ? -1 : 1;
+          aValue = a.pe;
+          bValue = b.pe;
           break;
         case "dividendYield":
-          aValue = a.dividendYield || 0;
-          bValue = b.dividendYield || 0;
+          // Put null values at the end
+          if (a.dividendYield === null) return sortOrder === "desc" ? 1 : -1;
+          if (b.dividendYield === null) return sortOrder === "desc" ? -1 : 1;
+          aValue = a.dividendYield;
+          bValue = b.dividendYield;
           break;
         case "volume":
           aValue = a.volume;
