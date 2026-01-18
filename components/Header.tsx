@@ -5,6 +5,7 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import { useState } from "react";
 import StockSearch from "./StockSearch";
 import SignInModal from "./SignInModal";
+import LiveIndicesTicker from "./LiveIndicesTicker";
 
 export default function Header() {
   const { data: session, status } = useSession();
@@ -62,6 +63,11 @@ export default function Header() {
 
           {/* Right Section */}
           <div className="flex items-center space-x-4">
+            {/* Live Indices Ticker - Show before auth buttons */}
+            <div className="hidden lg:block">
+              <LiveIndicesTicker />
+            </div>
+
             {/* Mobile Menu Button */}
             <button
               onClick={() => setShowMobileMenu(!showMobileMenu)}
