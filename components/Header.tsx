@@ -63,8 +63,8 @@ export default function Header() {
 
           {/* Right Section */}
           <div className="flex items-center space-x-4">
-            {/* Live Indices Ticker - Show before auth buttons */}
-            <div className="hidden lg:block">
+            {/* Live Indices Ticker - Show on all screen sizes */}
+            <div className="hidden md:block">
               <LiveIndicesTicker />
             </div>
 
@@ -197,6 +197,11 @@ export default function Header() {
         {/* Mobile Search Bar */}
         <div className="lg:hidden pb-4">
           <StockSearch />
+        </div>
+
+        {/* Mobile Indices Ticker */}
+        <div className="md:hidden pb-4">
+          <LiveIndicesTicker />
         </div>
       </div>
 
