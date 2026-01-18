@@ -337,6 +337,15 @@ export default function Header() {
               <span>🧮</span>
               <span>Tools</span>
             </Link>
+            
+            <Link
+              href="/charts"
+              className="text-white hover:text-orange-100 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-white inline-flex items-center gap-1"
+            >
+              <span>📊</span>
+              <span>Charts</span>
+            </Link>
+
             <Link
               href="/news"
               className="text-white hover:text-orange-100 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-white"

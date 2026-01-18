@@ -273,8 +273,8 @@ export default function ToolsPage() {
         {/* Disclaimer */}
         <div className="mt-8 p-4 bg-gray-100 rounded-lg">
           <p className="text-xs text-gray-600 text-center">
-            <strong>Disclaimer:</strong> These calculators are for informational and educational purposes only. 
-            Results are estimates based on the inputs provided and should not be considered financial advice. 
+            <strong>Disclaimer:</strong> These calculators are for informational and educational purposes only.
+            Results are estimates based on the inputs provided and should not be considered financial advice.
             Past performance does not guarantee future results. Always consult with a qualified financial advisor before making investment decisions.
           </p>
         </div>

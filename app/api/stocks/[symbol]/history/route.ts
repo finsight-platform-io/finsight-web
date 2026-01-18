@@ -1,90 +1,69 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import YahooFinance from "yahoo-finance2";
 
 export async function GET(
-  request: Request,
+  request: NextRequest,
   context: { params: Promise<{ symbol: string }> }
 ) {
   try {
-    const { symbol } = await context.params;
+    const { symbol } = await context.params; // ✅ MUST await
+
     const { searchParams } = new URL(request.url);
-    const period = searchParams.get("period") || "1mo"; // Default 1 month
+    const period = searchParams.get("period") || "1mo";
 
     if (!symbol) {
       return NextResponse.json(
-        {
-          success: false,
-          error: "Stock symbol is required",
-        },
+        { success: false, error: "Stock symbol is required" },
         { status: 400 }
       );
     }
 
-    const { default: YahooFinance } = require("yahoo-finance2");
     const yf = new YahooFinance();
 
-    // Map period to Yahoo Finance format
-    const periodMap: { [key: string]: { period1: string; period2: string } } = {
-      "1d": {
-        period1: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        period2: new Date().toISOString().split('T')[0],
-      },
-      "5d": {
-        period1: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        period2: new Date().toISOString().split('T')[0],
-      },
-      "1mo": {
-        period1: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        period2: new Date().toISOString().split('T')[0],
-      },
-      "3mo": {
-        period1: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        period2: new Date().toISOString().split('T')[0],
-      },
-      "6mo": {
-        period1: new Date(Date.now() - 180 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        period2: new Date().toISOString().split('T')[0],
-      },
-      "1y": {
-        period1: new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        period2: new Date().toISOString().split('T')[0],
-      },
-      "5y": {
-        period1: new Date(Date.now() - 5 * 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        period2: new Date().toISOString().split('T')[0],
-      },
+    const daysMap: Record<string, number> = {
+      "1d": 1,
+      "5d": 5,
+      "1mo": 30,
+      "3mo": 90,
+      "6mo": 180,
+      "1y": 365,
+      "5y": 1825,
     };
 
-    const dateRange = periodMap[period] || periodMap["1mo"];
+    const days = daysMap[period] ?? 30;
 
-    // Fetch historical data
-    const historicalData = await yf.historical(symbol, {
-      period1: dateRange.period1,
-      period2: dateRange.period2,
+    const period1 = new Date(Date.now() - days * 86400000);
+    const period2 = new Date();
+
+    const result = await yf.chart(symbol, {
+      period1,
+      period2,
+      interval: "1d",
     });
 
-    // Format data for TradingView
-    const formattedData = historicalData.map((item: any) => ({
-      time: Math.floor(new Date(item.date).getTime() / 1000), // Convert to Unix timestamp (seconds)
-      open: item.open,
-      high: item.high,
-      low: item.low,
-      close: item.close,
-      volume: item.volume,
-    }));
+    const data =
+      result?.quotes?.map((q) => ({
+        time: Math.floor(q.date.getTime() / 1000),
+        open: q.open,
+        high: q.high,
+        low: q.low,
+        close: q.close,
+        volume: q.volume,
+      })) ?? [];
 
     return NextResponse.json({
       success: true,
-      data: formattedData,
-      period: period,
-      symbol: symbol,
-      count: formattedData.length,
+      data,
+      count: data.length,
+      symbol,
+      period,
     });
   } catch (error: any) {
-    console.error("Error fetching historical data:", error);
+    console.error("Stock history error:", error);
     return NextResponse.json(
       {
         success: false,
-        error: error.message || "Failed to fetch historical data",
+        error: error.message || "Failed to fetch stock data",
       },
       { status: 500 }
     );
