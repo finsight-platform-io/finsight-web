@@ -17,24 +17,59 @@ export default function Header() {
     <header className="bg-gray-800 shadow-sm border-b border-gray-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center space-x-3 flex-shrink-0">
-            <svg 
-              className="w-6 h-6 text-white" 
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24"
-            >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" 
-              />
-            </svg>
-            <span className="text-2xl">📈</span>
-            <span className="text-xl font-bold text-white">Finsight</span>
-          </Link>
+          {/* Logo and Home Button */}
+          <div className="flex items-center flex-shrink-0">
+            {/* Home Icon Button */}
+            <Link href="/" className="p-2 hover:bg-gray-700 rounded-lg transition-colors">
+              <svg
+                className="w-6 h-6 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                />
+              </svg>
+            </Link>
+
+            {/* Logo */}
+            <Link href="/" className="flex items-center">
+              <svg viewBox="0 0 400 120" className="w-40 h-auto md:w-48">
+                <g transform="translate(20, 20)">
+                  <defs>
+                    <linearGradient id="hexGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" style={{ stopColor: "#1e3a8a" }} />
+                      <stop offset="50%" style={{ stopColor: "#3b82f6" }} />
+                      <stop offset="100%" style={{ stopColor: "#f97316" }} />
+                    </linearGradient>
+                  </defs>
+
+                  <path d="M 40 5 L 70 20 L 70 50 L 40 65 L 10 50 L 10 20 Z"
+                    fill="none"
+                    stroke="url(#hexGrad)"
+                    strokeWidth="4" />
+
+                  <rect x="20" y="40" width="6" height="15" fill="#f97316" rx="1" />
+                  <rect x="28" y="32" width="6" height="23" fill="#f97316" rx="1" />
+                  <rect x="36" y="25" width="6" height="30" fill="#f97316" rx="1" />
+                  <rect x="44" y="20" width="6" height="35" fill="#fb923c" rx="1" />
+
+                  <circle cx="52" cy="42" r="8" fill="none" stroke="#1e3a8a" strokeWidth="3" />
+                  <line x1="58" y1="48" x2="65" y2="55" stroke="#1e3a8a" strokeWidth="3" strokeLinecap="round" />
+                </g>
+
+                <text x="110" y="70" fontFamily="Arial, sans-serif" fontSize="48" fontWeight="bold" fill="#ffffff">
+                  Fin<tspan fill="#f97316">sight</tspan>
+                </text>
+
+                <path d="M 95 55 L 100 45 L 105 55" fill="none" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </Link>
+          </div>
 
           {/* Search Bar - Desktop */}
           <div className="hidden lg:flex flex-1 max-w-md mx-8">
