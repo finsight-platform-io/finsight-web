@@ -286,7 +286,7 @@ export default function Header() {
               className="text-white hover:text-orange-100 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-white flex items-center space-x-1"
             >
               {!session?.user && (
-                <span className="text-cyan-400 text-base">⭐</span>
+                <span className="text-black-400 text-base">★</span>
               )}
               <span>Portfolio</span>
             </Link>
