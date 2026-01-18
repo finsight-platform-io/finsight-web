@@ -198,6 +198,27 @@ export default function Header() {
       {showMobileMenu && (
         <div className="lg:hidden border-t border-gray-700 bg-gray-800">
           <nav className="px-4 py-4 space-y-2">
+            <Link
+              href="/markets"
+              className="block px-3 py-2 rounded-md text-base font-medium text-gray-200 hover:text-white hover:bg-gray-700"
+              onClick={() => setShowMobileMenu(false)}
+            >
+              Markets
+            </Link>
+            <Link
+              href="/screener"
+              className="block px-3 py-2 rounded-md text-base font-medium text-gray-200 hover:text-white hover:bg-gray-700"
+              onClick={() => setShowMobileMenu(false)}
+            >
+              Stock Screener
+            </Link>
+            <Link
+              href="/news"
+              className="block px-3 py-2 rounded-md text-base font-medium text-gray-200 hover:text-white hover:bg-gray-700"
+              onClick={() => setShowMobileMenu(false)}
+            >
+              News
+            </Link>
             {session?.user && (
               <>
                 <Link
@@ -268,6 +289,14 @@ export default function Header() {
               className="text-white hover:text-orange-100 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-white"
             >
               Top Losers
+            </Link>
+            {/* Stock Screener - NEW */}
+            <Link
+              href="/screener"
+              className="text-white hover:text-orange-100 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-white flex items-center space-x-1"
+            >
+              <span>🔍</span>
+              <span>Screener</span>
             </Link>
             <Link
               href="/news"

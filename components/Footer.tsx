@@ -62,8 +62,13 @@ export default function Footer() {
               Tools
             </h3>
             <ul className="space-y-2 text-sm">
-              <li className="text-gray-400">
-                Stock Screener <span className="text-xs">(Coming Soon)</span>
+              <li>
+                <Link 
+                  href="/screener" 
+                  className="text-gray-600 hover:text-blue-600 transition-colors"
+                >
+                  Stock Screener
+                </Link>
               </li>
               <li>
                 <Link 
@@ -79,6 +84,14 @@ export default function Footer() {
                   className="text-gray-600 hover:text-blue-600 transition-colors"
                 >
                   Portfolio Tracker
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/news" 
+                  className="text-gray-600 hover:text-blue-600 transition-colors"
+                >
+                  Market News
                 </Link>
               </li>
               <li className="text-gray-400">
