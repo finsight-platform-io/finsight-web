@@ -12,6 +12,7 @@ export default function Header() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showSignInModal, setShowSignInModal] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   return (
     <header className="bg-gray-800 shadow-sm border-b border-gray-700">
@@ -132,32 +133,37 @@ export default function Header() {
               </svg>
             </button>
 
-            {/* Auth Section - Stacked Buttons */}
+            {/* Auth Section */}
             {status === "loading" ? (
-              <div className="text-gray-500 text-sm">Loading...</div>
+              <div className="text-gray-400 text-sm">Loading...</div>
             ) : session?.user ? (
               // User is logged in - show profile dropdown
               <div className="relative">
                 <button
                   onClick={() => setShowDropdown(!showDropdown)}
-                  className="flex items-center space-x-2 hover:bg-gray-100 rounded-full p-2"
+                  className="flex items-center space-x-2 bg-gray-700 hover:bg-gray-600 rounded-full py-1.5 px-3 transition-colors"
                 >
-                  {session.user.image ? (
+                  {/* Profile Image - Fixed */}
+                  {session.user.image && !imageError ? (
                     <img
                       src={session.user.image}
                       alt={session.user.name || "User"}
-                      className="w-8 h-8 rounded-full"
+                      className="w-8 h-8 rounded-full object-cover"
+                      referrerPolicy="no-referrer"
+                      onError={() => setImageError(true)}
                     />
                   ) : (
-                    <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-medium">
-                      {session.user.name?.charAt(0) || "U"}
+                    <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-medium text-sm">
+                      {session.user.name?.charAt(0).toUpperCase() || "U"}
                     </div>
                   )}
-                  <span className="hidden md:block text-sm font-medium text-gray-700">
+                  {/* Name - Always visible */}
+                  <span className="hidden md:block text-sm font-medium text-white">
                     {session.user.name}
                   </span>
+                  {/* Dropdown arrow */}
                   <svg
-                    className="hidden md:block w-4 h-4 text-gray-500"
+                    className="hidden md:block w-4 h-4 text-gray-400"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -178,7 +184,7 @@ export default function Header() {
                       <p className="text-sm font-medium text-gray-900">
                         {session.user.name}
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-gray-500 truncate">
                         {session.user.email}
                       </p>
                     </div>
@@ -315,7 +321,7 @@ export default function Header() {
             >
               Top Losers
             </Link>
-            {/* Stock Screener - NEW */}
+            {/* Stock Screener */}
             <Link
               href="/screener"
               className="text-white hover:text-orange-100 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-white inline-flex items-center gap-1"
