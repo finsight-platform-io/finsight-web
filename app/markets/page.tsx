@@ -137,7 +137,12 @@ export default function MarketsPage() {
         <div className="mb-8 bg-white p-6 rounded-lg shadow-sm border border-gray-200">
           <h1 className="text-3xl font-bold text-gray-900">Market Overview</h1>
           <p className="text-gray-600 mt-2">
-            Live data from NSE & BSE • Market is {indices[0]?.marketState || "N/A"}
+            Live data from NSE & BSE •  {
+              indices[0]?.marketState === "PREPRE" ? "PRE-MARKET" :
+                indices[0]?.marketState === "REGULAR" ? "OPEN" :
+                  indices[0]?.marketState === "CLOSED" ? "CLOSED" :
+                    indices[0]?.marketState || "N/A"
+            }
           </p>
         </div>
 
@@ -168,19 +173,17 @@ export default function MarketsPage() {
                 {/* Change */}
                 <div className="flex items-center space-x-2">
                   <span
-                    className={`text-lg font-medium ${
-                      isPositive ? "text-green-600" : "text-red-600"
-                    }`}
+                    className={`text-lg font-medium ${isPositive ? "text-green-600" : "text-red-600"
+                      }`}
                   >
                     {isPositive ? "+" : ""}
                     {formatNumber(index.change)}
                   </span>
                   <span
-                    className={`px-2 py-1 rounded text-sm font-medium ${
-                      isPositive
+                    className={`px-2 py-1 rounded text-sm font-medium ${isPositive
                         ? "bg-green-100 text-green-800"
                         : "bg-red-100 text-red-800"
-                    }`}
+                      }`}
                   >
                     {isPositive ? "+" : ""}
                     {formatPercent(index.changePercent)}%

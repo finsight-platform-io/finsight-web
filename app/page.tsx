@@ -3,15 +3,16 @@
 import Link from "next/link";
 import { useSession, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import TopBrokersSection from "@/components/TopBrokersSection";
 import NewsCarousel from "@/components/NewsCarousel";
-import RealAd from "@/components/RealAd";
-import RotatingAd from "@/components/RotatingAd";
+import LiveMarketStream from "@/components/LiveMarketStream";
+import SignInModal from "@/components/SignInModal";
 
 export default function Home() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const [showSignInModal, setShowSignInModal] = useState(false);
 
   // Auto-redirect signed-in users to markets
   useEffect(() => {
@@ -56,7 +57,7 @@ export default function Home() {
                 Explore Markets
               </Link>
               <button
-                onClick={() => signIn("google")}
+                onClick={() => setShowSignInModal(true)}
                 className="bg-blue-600 text-white px-8 py-3 rounded-lg text-base font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2"
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -84,7 +85,7 @@ export default function Home() {
 
           {/* Ad - 1 column */}
           <div className="lg:col-span-1">
-            <RotatingAd />
+            <LiveMarketStream />
           </div>
         </div>
       </div>
@@ -92,7 +93,7 @@ export default function Home() {
       {/* Features Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Feature 1 */}
+          {/* Feature 1 - Markets (No auth needed) */}
           <Link
             href="/markets"
             className="bg-white p-8 rounded-lg shadow-sm border border-gray-200 hover:shadow-md hover:border-blue-300 transition-all cursor-pointer"
@@ -106,33 +107,41 @@ export default function Home() {
             </p>
           </Link>
 
-          {/* Feature 2 */}
-          <button
-            onClick={() => signIn("google")}
-            className="bg-white p-8 rounded-lg shadow-sm border border-gray-200 hover:shadow-md hover:border-blue-300 transition-all cursor-pointer text-left"
+          {/* Feature 2 - Watchlist (Shows empty state, NOT auto sign-in) ✅ FIXED */}
+          <Link
+            href="/watchlist"
+            className="bg-white p-8 rounded-lg shadow-sm border border-gray-200 hover:shadow-md hover:border-blue-300 transition-all cursor-pointer"
           >
             <div className="text-4xl mb-4">📌</div>
             <h3 className="text-xl font-semibold text-gray-900 mb-3">
               Personal Watchlist
             </h3>
-            <p className="text-gray-600">
+            <p className="text-gray-600 mb-3">
               Save and track your favorite stocks in one convenient place
             </p>
-          </button>
+            <div className="inline-flex items-center text-sm text-blue-600 font-medium">
+              <span className="text-yellow-400 mr-1">★</span>
+              Sign in required
+            </div>
+          </Link>
 
-          {/* Feature 3 */}
-          <button
-            onClick={() => signIn("google")}
-            className="bg-white p-8 rounded-lg shadow-sm border border-gray-200 hover:shadow-md hover:border-blue-300 transition-all cursor-pointer text-left"
+          {/* Feature 3 - Portfolio (Shows empty state, NOT auto sign-in) ✅ FIXED */}
+          <Link
+            href="/portfolio"
+            className="bg-white p-8 rounded-lg shadow-sm border border-gray-200 hover:shadow-md hover:border-blue-300 transition-all cursor-pointer"
           >
             <div className="text-4xl mb-4">💰</div>
             <h3 className="text-xl font-semibold text-gray-900 mb-3">
               Portfolio Tracking
             </h3>
-            <p className="text-gray-600">
+            <p className="text-gray-600 mb-3">
               Monitor your investments with real-time P&L calculations
             </p>
-          </button>
+            <div className="inline-flex items-center text-sm text-blue-600 font-medium">
+              <span className="text-yellow-400 mr-1">★</span>
+              Sign in required
+            </div>
+          </Link>
         </div>
       </div>
 
@@ -141,6 +150,11 @@ export default function Home() {
 
       {/* Top Brokers Section */}
       <TopBrokersSection />
+
+      {/* Sign In Modal */}
+      {showSignInModal && (
+        <SignInModal onClose={() => setShowSignInModal(false)} />
+      )}
     </div>
   );
 }

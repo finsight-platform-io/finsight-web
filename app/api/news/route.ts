@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 
-// News API Configuration
-// Using GNews API (free tier: 100 requests/day)
-// Sign up at: https://gnews.io/
+// NewsAPI Configuration
+// Free tier: 100 requests/day
+// Sign up at: https://newsapi.org/
 
 interface NewsArticle {
   id: string;
@@ -25,17 +25,17 @@ const CACHE_DURATION = 15 * 60 * 1000; // 15 minutes cache
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const query = searchParams.get("q") || "indian stock market";
+    const query = searchParams.get("q") || "stock market";
     const max = parseInt(searchParams.get("max") || "10");
-    const category = searchParams.get("category") || "";
 
     // Create cache key
-    const cacheKey = `${query}-${max}-${category}`;
+    const cacheKey = `${query}-${max}`;
 
     // Check cache first
     const now = Date.now();
     const cached = newsCache.get(cacheKey);
     if (cached && now - cached.timestamp < CACHE_DURATION) {
+      console.log("📦 Serving cached news for:", query);
       return NextResponse.json({
         success: true,
         articles: cached.articles.slice(0, max),
@@ -44,40 +44,50 @@ export async function GET(request: Request) {
       });
     }
 
-    const GNEWS_API_KEY = process.env.GNEWS_API_KEY;
+    const NEWS_API_KEY = process.env.NEWS_API_KEY;
 
-    if (!GNEWS_API_KEY) {
-      // Return fallback/mock data if no API key
-      console.warn("GNEWS_API_KEY not configured, using fallback data");
+    console.log("🔑 API Key present:", !!NEWS_API_KEY);
+    console.log("🔍 Original query:", query);
+
+    if (!NEWS_API_KEY) {
+      console.warn("⚠️ NEWS_API_KEY not configured, using fallback data");
       const fallbackArticles = getFallbackNews(query);
       return NextResponse.json({
         success: true,
         articles: fallbackArticles.slice(0, max),
         totalArticles: fallbackArticles.length,
         fallback: true,
+        message: "Using fallback data - Please add NEWS_API_KEY to environment variables",
       });
     }
 
-    // Fetch from GNews API
-    const apiUrl = new URL("https://gnews.io/api/v4/search");
-    apiUrl.searchParams.append("q", query);
-    apiUrl.searchParams.append("lang", "en");
-    apiUrl.searchParams.append("country", "in"); // India
-    apiUrl.searchParams.append("max", Math.min(max, 10).toString()); // GNews max is 10
-    apiUrl.searchParams.append("apikey", GNEWS_API_KEY);
+    // Detect category and get optimized query
+    const category = detectCategory(query);
+    const optimizedQuery = getOptimizedQuery(category);
+    
+    console.log("🎯 Detected category:", category);
+    console.log("🎯 Optimized query:", optimizedQuery);
+
+    const apiUrl = new URL("https://newsapi.org/v2/everything");
+    apiUrl.searchParams.append("q", optimizedQuery);
+    apiUrl.searchParams.append("language", "en");
+    apiUrl.searchParams.append("sortBy", "publishedAt");
+    apiUrl.searchParams.append("pageSize", "100");
+    apiUrl.searchParams.append("apiKey", NEWS_API_KEY);
+
+    console.log("🌐 Fetching from NewsAPI...");
 
     const response = await fetch(apiUrl.toString(), {
       headers: {
         "Accept": "application/json",
       },
-      next: { revalidate: 900 }, // Next.js cache for 15 minutes
+      next: { revalidate: 900 },
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("GNews API error:", response.status, errorText);
+      console.error("❌ NewsAPI error:", response.status, errorText);
       
-      // Return fallback on API error
       const fallbackArticles = getFallbackNews(query);
       return NextResponse.json({
         success: true,
@@ -90,7 +100,8 @@ export async function GET(request: Request) {
 
     const data = await response.json();
 
-    if (!data.articles || data.articles.length === 0) {
+    if (data.status !== "ok" || !data.articles || data.articles.length === 0) {
+      console.warn("⚠️ No articles from API, using fallback");
       const fallbackArticles = getFallbackNews(query);
       return NextResponse.json({
         success: true,
@@ -101,27 +112,63 @@ export async function GET(request: Request) {
       });
     }
 
-    // Transform GNews response to our format
-    const articles: NewsArticle[] = data.articles.map(
-      (article: any, index: number) => ({
+    // Transform and filter NewsAPI response with STRICT category filtering
+    const articles: NewsArticle[] = data.articles
+      .filter((article: any) => {
+        // Basic quality filters
+        const isValid = (
+          article.title !== "[Removed]" &&
+          article.description !== "[Removed]" &&
+          article.urlToImage &&
+          article.url &&
+          article.title &&
+          article.description &&
+          !article.title.toLowerCase().includes("removed")
+        );
+
+        if (!isValid) return false;
+
+        // STRICT category-specific filtering
+        return isStrictlyRelevant(article, category);
+      })
+      .map((article: any, index: number) => ({
         id: `news-${Date.now()}-${index}`,
-        title: article.title || "Untitled",
-        description: article.description || "",
-        content: article.content || "",
-        url: article.url || "#",
-        image: article.image || getDefaultImage(index),
-        publishedAt: article.publishedAt || new Date().toISOString(),
+        title: article.title,
+        description: article.description,
+        content: article.content || article.description,
+        url: article.url,
+        image: article.urlToImage,
+        publishedAt: article.publishedAt,
         source: {
           name: article.source?.name || "Unknown Source",
-          url: article.source?.url || "",
+          url: article.url,
         },
-      })
-    );
+      }))
+      .slice(0, Math.min(max * 2, 50));
+
+    console.log(`✅ Fetched ${articles.length} articles from API for category: ${category}`);
+
+    // If we got very few articles, supplement with category-specific fallback
+    if (articles.length < 5) {
+      console.log("⚠️ Few articles from API, adding fallback articles");
+      const fallbackArticles = getFallbackNews(query);
+      const combined = [...articles, ...fallbackArticles].slice(0, max);
+      
+      newsCache.set(cacheKey, { articles: combined, timestamp: now });
+      
+      return NextResponse.json({
+        success: true,
+        articles: combined,
+        totalArticles: combined.length,
+        mixed: true,
+        category: category,
+      });
+    }
 
     // Update cache
     newsCache.set(cacheKey, { articles, timestamp: now });
 
-    // Clean old cache entries (keep only last 20)
+    // Clean old cache entries
     if (newsCache.size > 20) {
       const oldestKey = newsCache.keys().next().value;
       if (oldestKey) newsCache.delete(oldestKey);
@@ -129,14 +176,15 @@ export async function GET(request: Request) {
 
     return NextResponse.json({
       success: true,
-      articles,
-      totalArticles: data.totalArticles || articles.length,
+      articles: articles.slice(0, max),
+      totalArticles: data.totalResults || articles.length,
+      live: true,
+      category: category,
     });
   } catch (error) {
-    console.error("News API Error:", error);
+    console.error("💥 News API Error:", error);
 
-    // Return fallback data on any error
-    const fallbackArticles = getFallbackNews("indian stock market");
+    const fallbackArticles = getFallbackNews("stock market");
     return NextResponse.json({
       success: true,
       articles: fallbackArticles,
@@ -147,173 +195,296 @@ export async function GET(request: Request) {
   }
 }
 
-// Comprehensive fallback news for Indian markets
-function getFallbackNews(query: string): NewsArticle[] {
-  const now = new Date();
+// Detect category from query
+function detectCategory(query: string): string {
   const queryLower = query.toLowerCase();
 
-  // Base news articles
-  const allNews: NewsArticle[] = [
+  if (queryLower.includes("mutual") || queryLower.includes("sip")) return "mutual-funds";
+  if (queryLower.includes("crypto") || queryLower.includes("bitcoin")) return "cryptocurrency";
+  if (queryLower.includes("commodity") || queryLower.includes("gold")) return "commodities";
+  if (queryLower.includes("forex") || queryLower.includes("rupee") || queryLower.includes("currency")) return "forex";
+  if (queryLower.includes("economy") || queryLower.includes("rbi") || queryLower.includes("gdp")) return "economy";
+  
+  return "stock-market";
+}
+
+// Get optimized query for each category
+function getOptimizedQuery(category: string): string {
+  const queries: { [key: string]: string } = {
+    "stock-market": "nifty OR sensex OR \"stock market\" OR BSE OR NSE",
+    "economy": "\"reserve bank india\" OR RBI OR \"GDP growth\" OR inflation OR \"economic policy\"",
+    "commodities": "\"gold price\" OR \"silver price\" OR \"crude oil\" OR commodity",
+    "cryptocurrency": "bitcoin OR ethereum OR cryptocurrency OR blockchain OR \"crypto regulation\"",
+    "forex": "\"indian rupee\" OR \"currency exchange\" OR forex OR \"dollar rupee\"",
+    "mutual-funds": "\"mutual fund\" OR SIP OR \"systematic investment\" OR \"fund manager\" OR \"fund performance\"",
+  };
+
+  return queries[category] || queries["stock-market"];
+}
+
+// STRICT relevance check - ensures articles truly belong to the category
+function isStrictlyRelevant(article: any, category: string): boolean {
+  const title = article.title?.toLowerCase() || "";
+  const desc = article.description?.toLowerCase() || "";
+  const combined = `${title} ${desc}`;
+
+  // Define MUST-HAVE and MUST-NOT-HAVE keywords for each category
+  const categoryRules: { [key: string]: { mustHave: string[], mustNotHave: string[] } } = {
+    "mutual-funds": {
+      mustHave: ["mutual", "sip", "fund", "amc", "nav", "scheme"],
+      mustNotHave: ["nifty", "sensex", "stock price", "bitcoin", "crypto", "gold price", "crude"]
+    },
+    "cryptocurrency": {
+      mustHave: ["bitcoin", "crypto", "ethereum", "blockchain", "btc", "eth"],
+      mustNotHave: ["mutual fund", "sip", "nifty", "sensex", "gold price", "crude oil"]
+    },
+    "commodities": {
+      mustHave: ["gold", "silver", "crude", "oil", "commodity", "metal"],
+      mustNotHave: ["bitcoin", "crypto", "mutual fund", "sip", "nifty", "sensex"]
+    },
+    "forex": {
+      mustHave: ["rupee", "dollar", "forex", "currency", "exchange rate", "inr", "usd"],
+      mustNotHave: ["bitcoin", "crypto", "mutual fund", "gold price", "crude oil"]
+    },
+    "economy": {
+      mustHave: ["rbi", "reserve bank", "gdp", "inflation", "economic", "policy", "growth rate"],
+      mustNotHave: ["bitcoin", "crypto", "mutual fund sip"]
+    },
+    "stock-market": {
+      mustHave: ["nifty", "sensex", "bse", "nse", "stock", "share", "equity", "market"],
+      mustNotHave: ["bitcoin", "crypto", "mutual fund sip", "gold price", "crude oil"]
+    }
+  };
+
+  const rules = categoryRules[category] || categoryRules["stock-market"];
+
+  // Check MUST-HAVE: At least one keyword must be present
+  const hasMustHave = rules.mustHave.some(keyword => combined.includes(keyword));
+  
+  // Check MUST-NOT-HAVE: None of these keywords should be present
+  const hasMustNotHave = rules.mustNotHave.some(keyword => combined.includes(keyword));
+
+  return hasMustHave && !hasMustNotHave;
+}
+
+// Enhanced fallback news with category-specific articles
+function getFallbackNews(query: string): NewsArticle[] {
+  const now = new Date();
+  const category = detectCategory(query);
+
+  // Stock Market specific news
+  const stockMarketNews: NewsArticle[] = [
     {
-      id: "fallback-1",
-      title: "Sensex, Nifty open higher on strong global cues; IT stocks lead gains",
-      description: "Indian benchmark indices opened on a positive note on Monday, tracking firm global markets. The BSE Sensex rose 250 points while Nifty50 crossed the 22,000 mark in early trade.",
+      id: "stock-1",
+      title: "Sensex surges 500 points, Nifty tops 22,200 on broad-based buying",
+      description: "Indian equity benchmarks rallied sharply with the BSE Sensex jumping 500 points and Nifty50 crossing 22,200 level amid strong global cues and sustained FII buying.",
       content: "",
       url: "#",
       image: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&q=80",
       publishedAt: new Date(now.getTime() - 1 * 60 * 60 * 1000).toISOString(),
-      source: { name: "Economic Times", url: "" },
+      source: { name: "Moneycontrol", url: "" },
     },
     {
-      id: "fallback-2",
-      title: "RBI keeps repo rate unchanged at 6.5%, maintains accommodative stance",
-      description: "The Reserve Bank of India's Monetary Policy Committee decided to keep the benchmark repo rate unchanged at 6.5% for the eighth consecutive time, citing inflation concerns.",
-      content: "",
-      url: "#",
-      image: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800&q=80",
-      publishedAt: new Date(now.getTime() - 3 * 60 * 60 * 1000).toISOString(),
-      source: { name: "Mint", url: "" },
-    },
-    {
-      id: "fallback-3",
-      title: "TCS, Infosys among top gainers as IT sector rallies on US demand outlook",
-      description: "Information technology stocks surged on Monday with TCS and Infosys leading the gains after positive commentary on demand recovery in key markets.",
+      id: "stock-2",
+      title: "IT stocks lead gains: TCS, Infosys, Wipro up 3-5% on strong Q4 outlook",
+      description: "Information technology stocks were the top gainers with TCS, Infosys, and Wipro surging 3-5% on improved demand outlook from the US and Europe markets.",
       content: "",
       url: "#",
       image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80",
-      publishedAt: new Date(now.getTime() - 5 * 60 * 60 * 1000).toISOString(),
-      source: { name: "Business Standard", url: "" },
+      publishedAt: new Date(now.getTime() - 3 * 60 * 60 * 1000).toISOString(),
+      source: { name: "ET Markets", url: "" },
     },
     {
-      id: "fallback-4",
-      title: "FIIs turn net buyers after 3-week selling spree; pump ₹2,500 crore in Indian equities",
-      description: "Foreign institutional investors returned as net buyers in the Indian equity market, investing ₹2,500 crore in a single session after weeks of sustained selling.",
+      id: "stock-3",
+      title: "Bank Nifty hits fresh record high led by HDFC Bank, ICICI Bank rally",
+      description: "The Bank Nifty index scaled a new all-time high as banking majors HDFC Bank and ICICI Bank rallied on strong quarterly earnings and asset quality improvement.",
+      content: "",
+      url: "#",
+      image: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=800&q=80",
+      publishedAt: new Date(now.getTime() - 6 * 60 * 60 * 1000).toISOString(),
+      source: { name: "Financial Express", url: "" },
+    },
+  ];
+
+  // Mutual Fund specific news (COMPLETELY DIFFERENT from stock market)
+  const mutualFundNews: NewsArticle[] = [
+    {
+      id: "mf-1",
+      title: "SIP contributions hit record ₹18,500 crore in January 2025",
+      description: "Systematic Investment Plan contributions through mutual funds reached an all-time high of ₹18,500 crore in January, reflecting strong retail investor confidence in equity schemes.",
+      content: "",
+      url: "#",
+      image: "https://images.unsplash.com/photo-1633158829585-23ba8f7c8caf?w=800&q=80",
+      publishedAt: new Date(now.getTime() - 1 * 60 * 60 * 1000).toISOString(),
+      source: { name: "Value Research", url: "" },
+    },
+    {
+      id: "mf-2",
+      title: "Top 10 mutual fund schemes that gave over 30% returns in 2024",
+      description: "Several mid-cap and small-cap mutual fund schemes delivered stellar returns of over 30% in 2024, outperforming benchmark indices by a wide margin.",
+      content: "",
+      url: "#",
+      image: "https://images.unsplash.com/photo-1554224154-26032ffc0d07?w=800&q=80",
+      publishedAt: new Date(now.getTime() - 4 * 60 * 60 * 1000).toISOString(),
+      source: { name: "ET Mutual Funds", url: "" },
+    },
+    {
+      id: "mf-3",
+      title: "SEBI proposes new rules for passive funds and index ETFs",
+      description: "Capital markets regulator SEBI has proposed new regulations for passive mutual funds and exchange-traded funds to enhance transparency and protect investor interests.",
+      content: "",
+      url: "#",
+      image: "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=800&q=80",
+      publishedAt: new Date(now.getTime() - 7 * 60 * 60 * 1000).toISOString(),
+      source: { name: "Mint Money", url: "" },
+    },
+  ];
+
+  // Economy news
+  const economyNews: NewsArticle[] = [
+    {
+      id: "economy-1",
+      title: "RBI maintains repo rate at 6.5%, focuses on inflation management",
+      description: "The Reserve Bank of India's Monetary Policy Committee kept the benchmark repo rate unchanged at 6.5%, prioritizing inflation control over growth stimulus in current scenario.",
+      content: "",
+      url: "#",
+      image: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800&q=80",
+      publishedAt: new Date(now.getTime() - 2 * 60 * 60 * 1000).toISOString(),
+      source: { name: "Economic Times", url: "" },
+    },
+    {
+      id: "economy-2",
+      title: "India's GDP growth projected at 7.2% for FY2025: Finance Ministry",
+      description: "The Finance Ministry projects India's GDP growth at 7.2% for the current fiscal year, supported by strong domestic consumption and investment demand.",
+      content: "",
+      url: "#",
+      image: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&q=80",
+      publishedAt: new Date(now.getTime() - 5 * 60 * 60 * 1000).toISOString(),
+      source: { name: "Mint", url: "" },
+    },
+    {
+      id: "economy-3",
+      title: "Inflation eases to 4.8% in January, within RBI comfort zone",
+      description: "India's retail inflation cooled to 4.8% in January from 5.2% in December, coming within RBI's comfort zone of 2-6%, driven by lower food prices.",
       content: "",
       url: "#",
       image: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=800&q=80",
       publishedAt: new Date(now.getTime() - 8 * 60 * 60 * 1000).toISOString(),
-      source: { name: "Moneycontrol", url: "" },
+      source: { name: "Business Standard", url: "" },
     },
+  ];
+
+  // Commodity news
+  const commodityNews: NewsArticle[] = [
     {
-      id: "fallback-5",
-      title: "Bank Nifty hits record high; HDFC Bank, ICICI Bank surge on strong Q3 results",
-      description: "The Bank Nifty index touched a new all-time high as banking heavyweights reported better-than-expected quarterly earnings, boosting investor sentiment.",
-      content: "",
-      url: "#",
-      image: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=800&q=80",
-      publishedAt: new Date(now.getTime() - 10 * 60 * 60 * 1000).toISOString(),
-      source: { name: "Financial Express", url: "" },
-    },
-    {
-      id: "fallback-6",
-      title: "Reliance Industries to invest ₹75,000 crore in green energy initiatives",
-      description: "Reliance Industries announced plans to invest ₹75,000 crore over the next three years in renewable energy and green hydrogen projects.",
-      content: "",
-      url: "#",
-      image: "https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=800&q=80",
-      publishedAt: new Date(now.getTime() - 12 * 60 * 60 * 1000).toISOString(),
-      source: { name: "NDTV Profit", url: "" },
-    },
-    {
-      id: "fallback-7",
-      title: "Gold prices hit ₹62,000/10g as investors seek safe haven amid global uncertainty",
-      description: "Gold prices in India touched ₹62,000 per 10 grams as investors flocked to safe-haven assets amid rising geopolitical tensions and global economic uncertainty.",
+      id: "commodity-1",
+      title: "Gold prices surge to ₹63,500 per 10 grams on safe-haven demand",
+      description: "Gold prices in India jumped to ₹63,500 per 10 grams as investors sought safety amid global economic uncertainties and geopolitical tensions in Middle East.",
       content: "",
       url: "#",
       image: "https://images.unsplash.com/photo-1610375461246-83df859d849d?w=800&q=80",
-      publishedAt: new Date(now.getTime() - 14 * 60 * 60 * 1000).toISOString(),
-      source: { name: "India Today Business", url: "" },
+      publishedAt: new Date(now.getTime() - 2 * 60 * 60 * 1000).toISOString(),
+      source: { name: "Gold Price Today", url: "" },
     },
     {
-      id: "fallback-8",
-      title: "Rupee gains 15 paise against US dollar on positive domestic cues",
-      description: "The Indian rupee appreciated by 15 paise to close at 83.10 against the US dollar, supported by foreign fund inflows and a weaker greenback globally.",
-      content: "",
-      url: "#",
-      image: "https://images.unsplash.com/photo-1580519542036-c47de6196ba5?w=800&q=80",
-      publishedAt: new Date(now.getTime() - 16 * 60 * 60 * 1000).toISOString(),
-      source: { name: "Reuters India", url: "" },
-    },
-    {
-      id: "fallback-9",
-      title: "IPO market buzzing: Three new issues to open this week worth ₹3,000 crore",
-      description: "The primary market continues its strong momentum with three IPOs scheduled to open this week, collectively looking to raise over ₹3,000 crore from investors.",
-      content: "",
-      url: "#",
-      image: "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=800&q=80",
-      publishedAt: new Date(now.getTime() - 20 * 60 * 60 * 1000).toISOString(),
-      source: { name: "Zee Business", url: "" },
-    },
-    {
-      id: "fallback-10",
-      title: "Auto stocks in focus: Maruti, Tata Motors report strong January sales",
-      description: "Automobile companies reported robust sales numbers for January, with market leader Maruti Suzuki and Tata Motors posting double-digit growth.",
-      content: "",
-      url: "#",
-      image: "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&q=80",
-      publishedAt: new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString(),
-      source: { name: "CNBC TV18", url: "" },
-    },
-    {
-      id: "fallback-11",
-      title: "Crude oil prices ease; analysts expect relief for Indian markets",
-      description: "International crude oil prices fell below $80 per barrel, bringing relief to oil-importing nations like India and easing inflation concerns.",
+      id: "commodity-2",
+      title: "Crude oil falls below $78 per barrel, relief for India's import bill",
+      description: "International crude oil prices declined below $78 per barrel, bringing significant relief to oil-importing nations like India and easing inflation pressures.",
       content: "",
       url: "#",
       image: "https://images.unsplash.com/photo-1518709766631-a6a7f45921c3?w=800&q=80",
-      publishedAt: new Date(now.getTime() - 26 * 60 * 60 * 1000).toISOString(),
-      source: { name: "Bloomberg Quint", url: "" },
+      publishedAt: new Date(now.getTime() - 4 * 60 * 60 * 1000).toISOString(),
+      source: { name: "Bloomberg Commodities", url: "" },
     },
     {
-      id: "fallback-12",
-      title: "Mutual fund SIP inflows cross ₹17,000 crore mark in December",
-      description: "Systematic Investment Plan inflows into mutual funds crossed the ₹17,000 crore mark in December, reflecting strong retail investor participation in equity markets.",
+      id: "commodity-3",
+      title: "Silver prices touch ₹75,000/kg on industrial demand surge",
+      description: "Silver prices in India reached ₹75,000 per kilogram driven by increased industrial demand from electronics and solar panel sectors.",
       content: "",
       url: "#",
-      image: "https://images.unsplash.com/photo-1633158829585-23ba8f7c8caf?w=800&q=80",
-      publishedAt: new Date(now.getTime() - 30 * 60 * 60 * 1000).toISOString(),
-      source: { name: "Value Research", url: "" },
+      image: "https://images.unsplash.com/photo-1609429019995-8c40f49535a5?w=800&q=80",
+      publishedAt: new Date(now.getTime() - 7 * 60 * 60 * 1000).toISOString(),
+      source: { name: "Commodity News", url: "" },
     },
   ];
 
-  // Filter based on query keywords
-  if (queryLower.includes("economy") || queryLower.includes("rbi") || queryLower.includes("gdp")) {
-    return allNews.filter(a => 
-      a.title.toLowerCase().includes("rbi") || 
-      a.title.toLowerCase().includes("rupee") ||
-      a.title.toLowerCase().includes("inflation")
-    );
-  }
-  
-  if (queryLower.includes("gold") || queryLower.includes("commodity") || queryLower.includes("crude")) {
-    return allNews.filter(a => 
-      a.title.toLowerCase().includes("gold") || 
-      a.title.toLowerCase().includes("crude") ||
-      a.title.toLowerCase().includes("oil")
-    );
-  }
-
-  if (queryLower.includes("ipo")) {
-    return allNews.filter(a => a.title.toLowerCase().includes("ipo"));
-  }
-
-  if (queryLower.includes("mutual") || queryLower.includes("sip")) {
-    return allNews.filter(a => a.title.toLowerCase().includes("mutual") || a.title.toLowerCase().includes("sip"));
-  }
-
-  // Default: return all news
-  return allNews;
-}
-
-// Default images for articles without images
-function getDefaultImage(index: number): string {
-  const defaultImages = [
-    "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&q=80",
-    "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800&q=80",
-    "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80",
-    "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=800&q=80",
-    "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=800&q=80",
-    "https://images.unsplash.com/photo-1518709766631-a6a7f45921c3?w=800&q=80",
+  // Cryptocurrency news
+  const cryptoNews: NewsArticle[] = [
+    {
+      id: "crypto-1",
+      title: "Bitcoin crosses $45,000 as institutional adoption grows globally",
+      description: "Bitcoin surged past $45,000 mark driven by increasing institutional adoption and positive regulatory developments in major markets including the US and Europe.",
+      content: "",
+      url: "#",
+      image: "https://images.unsplash.com/photo-1621761191319-c6fb62004040?w=800&q=80",
+      publishedAt: new Date(now.getTime() - 1 * 60 * 60 * 1000).toISOString(),
+      source: { name: "CoinDesk", url: "" },
+    },
+    {
+      id: "crypto-2",
+      title: "India considers framework for cryptocurrency regulation: Finance Ministry",
+      description: "The Finance Ministry is working on a comprehensive framework for cryptocurrency regulation, focusing on investor protection and maintaining financial stability.",
+      content: "",
+      url: "#",
+      image: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=800&q=80",
+      publishedAt: new Date(now.getTime() - 4 * 60 * 60 * 1000).toISOString(),
+      source: { name: "Economic Times Crypto", url: "" },
+    },
+    {
+      id: "crypto-3",
+      title: "Ethereum gains 8% as network upgrade improves transaction speeds",
+      description: "Ethereum rallied 8% following successful network upgrade that significantly improved transaction processing speeds and reduced gas fees for users.",
+      content: "",
+      url: "#",
+      image: "https://images.unsplash.com/photo-1622630998477-20aa696ecb05?w=800&q=80",
+      publishedAt: new Date(now.getTime() - 6 * 60 * 60 * 1000).toISOString(),
+      source: { name: "CryptoNews India", url: "" },
+    },
   ];
-  return defaultImages[index % defaultImages.length];
+
+  // Forex news
+  const forexNews: NewsArticle[] = [
+    {
+      id: "forex-1",
+      title: "Rupee appreciates to 82.95 vs dollar on strong capital inflows",
+      description: "The Indian rupee strengthened to 82.95 against the US dollar, supported by robust foreign portfolio investments and softening crude oil prices.",
+      content: "",
+      url: "#",
+      image: "https://images.unsplash.com/photo-1580519542036-c47de6196ba5?w=800&q=80",
+      publishedAt: new Date(now.getTime() - 2 * 60 * 60 * 1000).toISOString(),
+      source: { name: "Reuters India", url: "" },
+    },
+    {
+      id: "forex-2",
+      title: "Dollar index weakens as Fed signals pause in rate hikes",
+      description: "The US dollar index fell to 103.5 as Federal Reserve officials hinted at a potential pause in interest rate increases amid cooling inflation.",
+      content: "",
+      url: "#",
+      image: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&q=80",
+      publishedAt: new Date(now.getTime() - 5 * 60 * 60 * 1000).toISOString(),
+      source: { name: "Forex Live", url: "" },
+    },
+    {
+      id: "forex-3",
+      title: "RBI intervenes to curb rupee volatility amid global uncertainty",
+      description: "The Reserve Bank of India stepped in to manage rupee volatility, with the currency trading in a tight range of 83.00-83.20 against the dollar.",
+      content: "",
+      url: "#",
+      image: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=800&q=80",
+      publishedAt: new Date(now.getTime() - 8 * 60 * 60 * 1000).toISOString(),
+      source: { name: "Mint Forex", url: "" },
+    },
+  ];
+
+  // Return category-specific news
+  const categoryNews: { [key: string]: NewsArticle[] } = {
+    "stock-market": stockMarketNews,
+    "mutual-funds": mutualFundNews,
+    "economy": economyNews,
+    "commodities": commodityNews,
+    "cryptocurrency": cryptoNews,
+    "forex": forexNews,
+  };
+
+  return categoryNews[category] || stockMarketNews;
 }

@@ -77,24 +77,9 @@ export default function Header() {
             <StockSearch />
           </div>
 
-          {/* Navigation - Desktop */}
+          {/* Navigation - Desktop - No Watchlist/Portfolio here, they're in orange bar */}
           <nav className="hidden lg:flex space-x-6 mr-6">
-            {session?.user && (
-              <>
-                <Link
-                  href="/watchlist"
-                  className="text-gray-200 hover:text-white font-medium transition-colors text-sm"
-                >
-                  Watchlist
-                </Link>
-                <Link
-                  href="/portfolio"
-                  className="text-gray-200 hover:text-white font-medium transition-colors text-sm"
-                >
-                  Portfolio
-                </Link>
-              </>
-            )}
+            {/* Watchlist and Portfolio are in the orange bar below */}
           </nav>
 
           {/* Right Section */}
@@ -250,26 +235,9 @@ export default function Header() {
       {showMobileMenu && (
         <div className="lg:hidden border-t border-gray-700 bg-gray-800">
           <nav className="px-4 py-4 space-y-2">
-            {session?.user && (
-              <>
-                <Link
-                  href="/watchlist"
-                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-200 hover:text-white hover:bg-gray-700"
-                  onClick={() => setShowMobileMenu(false)}
-                >
-                  My Watchlist
-                </Link>
-                <Link
-                  href="/portfolio"
-                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-200 hover:text-white hover:bg-gray-700"
-                  onClick={() => setShowMobileMenu(false)}
-                >
-                  My Portfolio
-                </Link>
-              </>
-            )}
+            {/* Sign in/up buttons for non-authenticated users */}
             {!session?.user && (
-              <div className="pt-4 space-y-2">
+              <div className="space-y-2">
                 <button
                   onClick={() => {
                     setShowSignInModal(true);
@@ -333,6 +301,14 @@ export default function Header() {
               <span>📊</span>
               <span>Charts</span>
             </Link>
+            {/* Commodity - NEW */}
+            <Link
+              href="/commodity"
+              className="text-white hover:text-orange-100 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-white inline-flex items-center gap-1"
+            >
+              <span>🥇</span>
+              <span>Commodity</span>
+            </Link>
             <Link
               href="/news"
               className="text-white hover:text-orange-100 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-white"
@@ -345,6 +321,17 @@ export default function Header() {
             >
               Analysis
             </Link>
+            {/* Watchlist - Always visible with star for non-authenticated users */}
+            <Link
+              href="/watchlist"
+              className="text-white hover:text-orange-100 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-white inline-flex items-center gap-1"
+            >
+              {!session?.user && (
+                <span className="text-yellow-300 text-base">★</span>
+              )}
+              <span>Watchlist</span>
+            </Link>
+            {/* Portfolio - Always visible with star for non-authenticated users */}
             <Link
               href="/portfolio"
               className="text-white hover:text-orange-100 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-white inline-flex items-center gap-1"
@@ -354,22 +341,6 @@ export default function Header() {
               )}
               <span>Portfolio</span>
             </Link>
-            {session?.user && (
-              <>
-                <Link
-                  href="/watchlist"
-                  className="text-white hover:text-orange-100 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-white"
-                >
-                  My Watchlist
-                </Link>
-                <Link
-                  href="/portfolio"
-                  className="text-white hover:text-orange-100 font-medium py-3 text-sm whitespace-nowrap transition-colors border-b-2 border-transparent hover:border-white"
-                >
-                  My Portfolio
-                </Link>
-              </>
-            )}
             {/* Finsight Pro - Premium Feature */}
             <Link
               href="/pro"
