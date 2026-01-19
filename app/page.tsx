@@ -1,27 +1,59 @@
 "use client";
 
 import Link from "next/link";
-import { useSession, signIn } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import TopBrokersSection from "@/components/TopBrokersSection";
 import NewsCarousel from "@/components/NewsCarousel";
-import LiveMarketStream from "@/components/LiveMarketStream";
 import SignInModal from "@/components/SignInModal";
+
+interface Stock {
+  symbol: string;
+  name: string;
+  price: number;
+  changePercent: number;
+}
 
 export default function Home() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [showSignInModal, setShowSignInModal] = useState(false);
+  const [stocks, setStocks] = useState<Stock[]>([]);
 
-  // Auto-redirect signed-in users to markets
+  // Fetch stocks for ticker
+  useEffect(() => {
+    fetchStocks();
+    const interval = setInterval(fetchStocks, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const fetchStocks = async () => {
+    try {
+      const [gainersRes, losersRes] = await Promise.all([
+        fetch("/api/screener?category=gainers&limit=8"),
+        fetch("/api/screener?category=losers&limit=8"),
+      ]);
+      const gainersData = await gainersRes.json();
+      const losersData = await losersRes.json();
+      if (gainersData.success && losersData.success) {
+        setStocks([
+          ...gainersData.stocks.slice(0, 8),
+          ...losersData.stocks.slice(0, 8),
+        ]);
+      }
+    } catch (error) {
+      console.error("Error fetching stocks:", error);
+    }
+  };
+
+  // Auto-redirect signed-in users
   useEffect(() => {
     if (session?.user) {
       router.push("/markets");
     }
   }, [session, router]);
 
-  // Show loading while checking session
   if (status === "loading") {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -30,131 +62,155 @@ export default function Home() {
     );
   }
 
-  // Don't show homepage if user is signed in (they'll be redirected)
   if (session?.user) {
     return null;
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      {/* Hero Section with Ad - OPTIMIZED */}
+      {/* Hero Section - 4 Columns: Text(2) | Video(1) | Ticker(1) */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
-          {/* Hero Content - 2 columns */}
-          <div className="lg:col-span-2 text-center lg:text-left">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          
+          {/* Column 1-2: Hero Text (2 columns = 50% width) */}
+          <div className="lg:col-span-2 text-center lg:text-left flex flex-col justify-center">
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
               Track Indian Stock Markets
             </h1>
             <p className="text-lg md:text-xl text-gray-600 mb-8">
               Real-time data for NSE & BSE stocks, indices, and market analysis
             </p>
-
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Link
                 href="/markets"
-                className="bg-white text-blue-600 border-2 border-blue-600 px-8 py-3 rounded-lg text-base font-semibold hover:bg-blue-50 transition-colors"
+                className="bg-white text-blue-600 border-2 border-blue-600 px-8 py-3 rounded-lg text-base font-semibold hover:bg-blue-50 transition-colors text-center"
               >
                 Explore Markets
               </Link>
               <button
                 onClick={() => setShowSignInModal(true)}
-                className="bg-blue-600 text-white px-8 py-3 rounded-lg text-base font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2"
+                className="bg-blue-600 text-white px-8 py-3 rounded-lg text-base font-semibold hover:bg-blue-700 transition-colors"
               >
-                <svg className="w-5 h-5" viewBox="0 0 24 24">
-                  <path
-                    fill="currentColor"
-                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                  />
-                  <path
-                    fill="currentColor"
-                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                  />
-                  <path
-                    fill="currentColor"
-                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                  />
-                  <path
-                    fill="currentColor"
-                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                  />
-                </svg>
-                <span>Get Started</span>
+                Get Started
               </button>
             </div>
           </div>
 
-          {/* Ad - 1 column */}
-          <div className="lg:col-span-1">
-            <LiveMarketStream />
+          {/* Column 3: Live Video (1 column = 25% width) */}
+          <div className="lg:col-span-1 lg:ml-16 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden h-fit">
+            <div className="bg-gradient-to-r from-red-600 to-red-700 px-2 py-1">
+              <span className="text-white font-bold text-[10px] flex items-center space-x-1">
+                <span className="animate-pulse">🔴</span>
+                <span>LIVE News</span>
+              </span>
+            </div>
+            <div className="aspect-video">
+              <iframe
+                className="w-full h-full"
+                src="https://www.youtube.com/embed/nDCdRHHBga0?autoplay=1&mute=1&controls=1&modestbranding=1&rel=0&enablejsapi=1"
+                title="CNBC TV18"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              ></iframe>
+            </div>
           </div>
+
+          {/* Column 4: Stock Ticker (1 column = 25% width) */}
+          <div className="lg:col-span-1 bg-gray-900 text-white rounded-lg shadow-sm border border-gray-700 overflow-hidden">
+            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-2 py-1 flex items-center justify-between">
+              <span className="font-bold text-[10px]">📊 LIVE</span>
+              <span className="flex items-center space-x-0.5">
+                <span className="w-1 h-1 bg-green-400 rounded-full animate-pulse"></span>
+                <span className="text-[8px]">LIVE</span>
+              </span>
+            </div>
+
+            <div className="overflow-hidden" style={{ height: "200px" }}>
+              {stocks.length > 0 ? (
+                <div className="animate-scroll-up">
+                  {[...stocks, ...stocks].map((stock, idx) => (
+                    <Link
+                      key={`${stock.symbol}-${idx}`}
+                      href={`/stocks/${stock.symbol}`}
+                      className="block border-b border-gray-800 hover:bg-gray-800/50 px-2 py-1.5"
+                    >
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1 min-w-0 pr-1">
+                          <p className="font-bold text-white text-[10px] truncate">{stock.symbol}</p>
+                          <p className="text-[8px] text-gray-400 truncate">{stock.name}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-bold text-white text-[10px]">₹{stock.price.toFixed(0)}</p>
+                          <p className={`text-[8px] font-semibold ${stock.changePercent >= 0 ? "text-green-400" : "text-red-400"}`}>
+                            {stock.changePercent >= 0 ? "▲" : "▼"}{Math.abs(stock.changePercent).toFixed(1)}%
+                          </p>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex items-center justify-center h-full">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+                </div>
+              )}
+            </div>
+
+            <div className="bg-gray-800 px-2 py-0.5 text-center border-t border-gray-700">
+              <Link href="/markets" className="text-[9px] text-blue-400 hover:text-blue-300">
+                View All →
+              </Link>
+            </div>
+          </div>
+
         </div>
       </div>
 
       {/* Features Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Feature 1 - Markets (No auth needed) */}
-          <Link
-            href="/markets"
-            className="bg-white p-8 rounded-lg shadow-sm border border-gray-200 hover:shadow-md hover:border-blue-300 transition-all cursor-pointer"
-          >
+          <Link href="/markets" className="bg-white p-8 rounded-lg shadow-sm border hover:shadow-md transition-all">
             <div className="text-4xl mb-4">📊</div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-3">
-              Real-time Market Data
-            </h3>
-            <p className="text-gray-600">
-              Track NSE & BSE indices, top gainers, losers, and live stock prices
-            </p>
+            <h3 className="text-xl font-semibold mb-3">Real-time Market Data</h3>
+            <p className="text-gray-600">Track NSE & BSE indices, top gainers, losers, and live stock prices</p>
           </Link>
-
-          {/* Feature 2 - Watchlist (Shows empty state, NOT auto sign-in) ✅ FIXED */}
-          <Link
-            href="/watchlist"
-            className="bg-white p-8 rounded-lg shadow-sm border border-gray-200 hover:shadow-md hover:border-blue-300 transition-all cursor-pointer"
-          >
+          <Link href="/watchlist" className="bg-white p-8 rounded-lg shadow-sm border hover:shadow-md transition-all">
             <div className="text-4xl mb-4">📌</div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-3">
-              Personal Watchlist
-            </h3>
-            <p className="text-gray-600 mb-3">
-              Save and track your favorite stocks in one convenient place
-            </p>
-            <div className="inline-flex items-center text-sm text-blue-600 font-medium">
-              <span className="text-yellow-400 mr-1">★</span>
-              Sign in required
+            <h3 className="text-xl font-semibold mb-3">Personal Watchlist</h3>
+            <p className="text-gray-600 mb-3">Save and track your favorite stocks</p>
+            <div className="text-sm text-blue-600 font-medium">
+              <span className="text-yellow-400 mr-1">★</span>Sign in required
             </div>
           </Link>
-
-          {/* Feature 3 - Portfolio (Shows empty state, NOT auto sign-in) ✅ FIXED */}
-          <Link
-            href="/portfolio"
-            className="bg-white p-8 rounded-lg shadow-sm border border-gray-200 hover:shadow-md hover:border-blue-300 transition-all cursor-pointer"
-          >
+          <Link href="/portfolio" className="bg-white p-8 rounded-lg shadow-sm border hover:shadow-md transition-all">
             <div className="text-4xl mb-4">💰</div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-3">
-              Portfolio Tracking
-            </h3>
-            <p className="text-gray-600 mb-3">
-              Monitor your investments with real-time P&L calculations
-            </p>
-            <div className="inline-flex items-center text-sm text-blue-600 font-medium">
-              <span className="text-yellow-400 mr-1">★</span>
-              Sign in required
+            <h3 className="text-xl font-semibold mb-3">Portfolio Tracking</h3>
+            <p className="text-gray-600 mb-3">Monitor your investments with real-time P&L</p>
+            <div className="text-sm text-blue-600 font-medium">
+              <span className="text-yellow-400 mr-1">★</span>Sign in required
             </div>
           </Link>
         </div>
       </div>
 
-      {/* Latest News Carousel */}
       <NewsCarousel />
-
-      {/* Top Brokers Section */}
       <TopBrokersSection />
 
-      {/* Sign In Modal */}
-      {showSignInModal && (
-        <SignInModal onClose={() => setShowSignInModal(false)} />
-      )}
+      {showSignInModal && <SignInModal onClose={() => setShowSignInModal(false)} />}
+
+      <style jsx>{`
+        @keyframes scroll-up {
+          from { transform: translateY(0); }
+          to { transform: translateY(-50%); }
+        }
+        .animate-scroll-up {
+          animation: scroll-up 40s linear infinite;
+        }
+        .animate-scroll-up:hover {
+          animation-play-state: paused;
+        }
+      `}</style>
     </div>
   );
 }

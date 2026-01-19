@@ -94,8 +94,13 @@ export default function Footer() {
                   Market News
                 </Link>
               </li>
-              <li className="text-gray-400">
-                Market Calendar <span className="text-xs">(Coming Soon)</span>
+              <li>
+                <Link 
+                  href="/tools/calendars/holidays" 
+                  className="text-gray-600 hover:text-blue-600 transition-colors"
+                >
+                  Market Calendar
+                </Link>
               </li>
             </ul>
           </div>
