@@ -172,12 +172,12 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <Link href="/markets" className="bg-white p-8 rounded-lg shadow-sm border hover:shadow-md transition-all">
             <div className="text-4xl mb-4">📊</div>
-            <h3 className="text-xl font-semibold mb-3">Real-time Market Data</h3>
+            <h3 className="text-xl font-semibold mb-3 text-gray-900">Real-time Market Data</h3>
             <p className="text-gray-600">Track NSE & BSE indices, top gainers, losers, and live stock prices</p>
           </Link>
           <Link href="/watchlist" className="bg-white p-8 rounded-lg shadow-sm border hover:shadow-md transition-all">
             <div className="text-4xl mb-4">📌</div>
-            <h3 className="text-xl font-semibold mb-3">Personal Watchlist</h3>
+            <h3 className="text-xl font-semibold mb-3 text-gray-900">Personal Watchlist</h3>
             <p className="text-gray-600 mb-3">Save and track your favorite stocks</p>
             <div className="text-sm text-blue-600 font-medium">
               <span className="text-yellow-400 mr-1">★</span>Sign in required
@@ -185,7 +185,7 @@ export default function Home() {
           </Link>
           <Link href="/portfolio" className="bg-white p-8 rounded-lg shadow-sm border hover:shadow-md transition-all">
             <div className="text-4xl mb-4">💰</div>
-            <h3 className="text-xl font-semibold mb-3">Portfolio Tracking</h3>
+            <h3 className="text-xl font-semibold mb-3 text-gray-900">Portfolio Tracking</h3>
             <p className="text-gray-600 mb-3">Monitor your investments with real-time P&L</p>
             <div className="text-sm text-blue-600 font-medium">
               <span className="text-yellow-400 mr-1">★</span>Sign in required

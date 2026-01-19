@@ -70,7 +70,7 @@ export default function LiveChartsPage() {
   useEffect(() => {
     if (manualSymbol.length >= 2) {
       const timer = setTimeout(() => {
-        console.log("Searching for:", manualSymbol); // DEBUG
+        console.log("Searching for:", manualSymbol);
         searchAutocomplete();
       }, 300);
       return () => clearTimeout(timer);
@@ -84,19 +84,18 @@ export default function LiveChartsPage() {
   const searchAutocomplete = async () => {
     try {
       setSearchingAutocomplete(true);
-      console.log("Fetching from API..."); // DEBUG
+      console.log("Fetching from API...");
       const response = await fetch(`/api/stocks/search?q=${manualSymbol}`);
       const data = await response.json();
-      console.log("API Response:", data); // DEBUG
+      console.log("API Response:", data);
       
-      // API returns 'results' not 'data'
       if (data.success && data.results && data.results.length > 0) {
-        console.log("Results found:", data.results.length); // DEBUG
-        console.log("First result:", data.results[0]); // DEBUG - SEE STRUCTURE
+        console.log("Results found:", data.results.length);
+        console.log("First result:", data.results[0]);
         setAutocompleteResults(data.results.slice(0, 8));
         setShowAutocomplete(true);
       } else {
-        console.log("No results found"); // DEBUG
+        console.log("No results found");
         setAutocompleteResults([]);
         setShowAutocomplete(false);
       }
@@ -111,20 +110,18 @@ export default function LiveChartsPage() {
 
   const fetchChartData = async (directSymbol?: string) => {
     let symbol = directSymbol || manualSymbol.trim() || selectedStock.symbol;
-    console.log("fetchChartData called with:", { directSymbol, manualSymbol, symbol }); // DEBUG
-    console.log("Selected market:", selectedMarket); // DEBUG
+    console.log("fetchChartData called with:", { directSymbol, manualSymbol, symbol });
+    console.log("Selected market:", selectedMarket);
     
     if (!symbol) return;
 
-    // If using directSymbol (from autocomplete), don't add suffix - it's already complete
     if (!directSymbol && manualSymbol.trim()) {
-      // Don't add suffix if it's an index (^) or forex (=X) or already has a suffix
       if (!symbol.includes('.') && !symbol.startsWith('^') && !symbol.includes('=')) {
         symbol = symbol + selectedMarket.suffix;
       }
     }
     
-    console.log("Final symbol to fetch:", symbol); // DEBUG
+    console.log("Final symbol to fetch:", symbol);
 
     try {
       setLoading(true);
@@ -200,14 +197,14 @@ export default function LiveChartsPage() {
                   Search Any Stock (Global):
                 </label>
                 
-                {/* Market Selector Dropdown */}
+                {/* Market Selector Dropdown - FIXED */}
                 <select
                   value={selectedMarket.code}
                   onChange={(e) => {
                     const market = MARKETS.find(m => m.code === e.target.value);
                     if (market) setSelectedMarket(market);
                   }}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm mb-2 bg-white"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm mb-2 bg-white text-gray-900"
                 >
                   {MARKETS.map((market) => (
                     <option key={market.code} value={market.code}>
@@ -259,18 +256,15 @@ export default function LiveChartsPage() {
                           <button
                             key={stock.symbol}
                             onClick={() => {
-                              console.log("Clicked stock:", stock); // DEBUG
+                              console.log("Clicked stock:", stock);
                               
-                              // Use the FULL symbol directly
-                              const fullSymbol = stock.symbol; // e.g., "JKTYRE.NS"
-                              console.log("Full symbol:", fullSymbol); // DEBUG
+                              const fullSymbol = stock.symbol;
+                              console.log("Full symbol:", fullSymbol);
                               
-                              // Show the clean symbol in input (without .NS/.BO)
                               const displaySymbol = fullSymbol.replace('.NS', '').replace('.BO', '');
                               setManualSymbol(displaySymbol);
                               setShowAutocomplete(false);
                               
-                              // Fetch immediately with the full symbol
                               fetchChartData(fullSymbol);
                             }}
                             className="w-full text-left px-4 py-3 hover:bg-blue-50 border-b border-gray-100 last:border-b-0 transition-colors"
