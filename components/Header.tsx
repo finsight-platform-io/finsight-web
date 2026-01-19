@@ -132,9 +132,6 @@ export default function Header() {
             <Link href="/charts" className="text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors">
               Charts
             </Link>
-            <Link href="/commodity" className="text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors">
-              Commodity
-            </Link>
             <Link href="/news" className="text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors">
               News
             </Link>
@@ -185,13 +182,6 @@ export default function Header() {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Charts
-              </Link>
-              <Link 
-                href="/commodity" 
-                className="block py-2 text-sm font-medium text-gray-700 hover:text-gray-900"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Commodity
               </Link>
               <Link 
                 href="/news" 
