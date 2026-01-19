@@ -34,7 +34,7 @@ export default function NewsCarousel() {
       setLoading(true);
       setError("");
 
-      const response = await fetch("/api/news?q=indian stock market NSE BSE&max=8");
+      const response = await fetch("/api/news?q=stock market");
       const data = await response.json();
 
       if (data.success && data.articles?.length > 0) {
