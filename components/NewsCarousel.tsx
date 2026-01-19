@@ -33,7 +33,7 @@ export default function NewsCarousel() {
     try {
       setLoading(true);
       setError("");
-
+//news 
       const response = await fetch("/api/news?q=stock market");
       const data = await response.json();
 
